@@ -997,8 +997,9 @@ class WebNumberField:
         loc_alg_dict = self.get_local_algebras()
         return [loc_alg_dict.get(str(p), None) for p in self.ramified_primes()]
 
-    def draw_spectrum(self):
-        return draw_spec(self.K(), nprimes=15).as_str()
+    def draw_spectrum(self,num_primes):
+        local_algs = self._data.get('local_algs', None)
+        return draw_spec(self.frobs()[:num_primes], local_algs, colors=True).as_str()
     
     def make_code_snippets(self):
         # read in code.yaml from numberfields directory:

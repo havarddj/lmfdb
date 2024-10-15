@@ -325,6 +325,6 @@ table.ntdata a {
 	{% endif %}
 <h2> {{ KNOWL('nf.spectrum_ring_of_integers', title='Spectrum of ring of integers') }}</h2>
 	<img>
-	  {{ nf.draw_spectrum() | safe}}
+	  {{ nf.draw_spectrum(num_primes=15) | safe}}
 	  </img>
 {% endblock %}
