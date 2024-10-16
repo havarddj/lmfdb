@@ -11,10 +11,11 @@ class Point:
     y: float
     girth: float = 1
     color: str = "black"
+    ram_index: int = 1 
     def __str__(self):
         return f"Point ({self.x}, {self.y}) of girth {self.girth} and color {self.color}"
 
-def draw_spec(frobs, local_algs, colors=True) -> svg.SVG:
+def draw_spec(frobs, local_alg_dict, colors=True) -> svg.SVG:
     """ Draw the spectrum of the ring of integers of a number field,
     from data in the lmfdb.
     `frobs` is a list of lists [[p, [frob_cycle1,...,frob_cycleN]]]
@@ -56,11 +57,11 @@ def draw_spec(frobs, local_algs, colors=True) -> svg.SVG:
     line_thickness = 1
 
     # increase or decrease girth of ramified primes
-    ramify_factor = 1
+    ramify_factor = .7
+    ram_idx_factor = 2.5
 
     # radius of (unramified) points
     dot_radius = 2.5
-
     # parameter to control the cubic bezier curves.
     # Should probably be between 0 and 2, with 1 being "reasonable"
     curviness = 0.9
@@ -76,7 +77,7 @@ def draw_spec(frobs, local_algs, colors=True) -> svg.SVG:
         x_coord = (n+1)*x_spread
         if l == [0]:
             coords.append(ram_coords(
-                local_algs, p, x_coord, y_centre, y_spread
+                local_alg_dict, p, x_coord, y_centre, y_spread
             ))
         else:
             coords.append(unram_coords(
@@ -145,6 +146,18 @@ def draw_spec(frobs, local_algs, colors=True) -> svg.SVG:
                     fill = pt.color,
                     stroke="black")
             )
+            for i in range(1,pt.ram_index):
+                new_radius = radius + ram_idx_factor*i**(2/3)
+                elements.append(
+                    svg.Circle(
+                        cx = pt.x,
+                        cy = pt.y,
+                        r = new_radius,
+                        fill = "none",
+                        stroke = "black",
+                        stroke_width = .7
+                    )
+                )
     # now draw lines
     for n in range(num_primes):
         for pt_this in coords[n]:
@@ -197,28 +210,24 @@ def unram_coords(frob_cycle_list, x_coord, y_centre, spread, col_max):
     return point_list
 
 
-def ram_coords(local_algs, p, x_coord, y_centre, spread):
-    """ Given list of strings `local_algs` as stored in the database, and a prime `p`,
+def ram_coords(local_alg_dict, p, x_coord, y_centre, spread):
+    """ Given `local_alg_dict` as defined in web_number_field.py, and a prime `p`,
     extract the points in the ramified fibre
     """
-    algs = []
-    for s in local_algs:
-        if s[0] == "m":
-            s = s[1:]
-        if s.split('.')[0] == str(p):
-            algs.append(s)
+    # list of lists [e,f]
+    algs = local_alg_dict[str(p)]
 
     assert algs != [], f"Ramified prime {p} has no local data!"
     N = len(algs)
     point_list = []
     if N == 1:
-        ram_index = int(algs[0].split('.')[1])
-        return [Point(x_coord, y_centre, ram_index, "black")]
+        ram_index, residue_deg = algs[0]
+        return [Point(x_coord, y_centre, residue_deg, "black", ram_index)]
     
-    for point_index, string in enumerate(algs):
-        ram_index = int(string.split('.')[1])
+    for point_index, data in enumerate(algs):
+        ram_index, residue_deg = data
         y_offset = round(spread*(2*point_index /(N-1) -1))
-        point = Point(x_coord, y_centre - y_offset, ram_index, "black")
+        point = Point(x_coord, y_centre - y_offset, residue_deg, "black", ram_index)
         point_list.append(point)
     return point_list
 
@@ -234,14 +243,16 @@ def hsl_color(n, n_max):
     l_max = 90
     s = round(n/n_max*s_max)
     l = round(n/n_max*l_max)
-    # l = 73
+
     return f"hsl(180,{s}%,{l}%)"
 
 ### Testing
 
 def test_drawspec():
-    frobs = [[2, [0]], [3, [[6, 1], [2, 1]]], [5, [[4, 1], [2, 1], [1, 2]]], [7, [[8, 1]]], [11, [[8, 1]]], [13, [[2, 4]]], [17, [[3, 2], [1, 2]]], [19, [[8, 1]]], [23, [[6, 1], [2, 1]]]]
-    local_algs = ['2.2.2.1', '2.6.8.1', '173.2.0.1', '173.2.1.1', '173.2.0.1', '173.2.0.1', 'm16493.1.2.0', 'm16493.1.2.0', 'm16493.1.2.0', 'm16493.2.1.1']
+    # spectrum of integers of splitting field of x^7 + 41
+    frobs = [[2, [[3, 2], [1, 1]]], [3, [[6, 1], [1, 1]]], [5, [[6, 1], [1, 1]]], [7, [0]], [11, [[3, 2], [1, 1]]], [13, [[2, 3], [1, 1]]], [17, [[6, 1], [1, 1]]], [19, [[6, 1], [1, 1]]], [23, [[3, 2], [1, 1]]], [29, [[1, 7]]], [31, [[6, 1], [1, 1]]], [37, [[3, 2], [1, 1]]], [41, [0]], [43, [[7, 1]]], [47, [[6, 1], [1, 1]]], [53, [[3, 2], [1, 1]]], [59, [[6, 1], [1, 1]]]]
+    
+    local_algs = {"7": [[7,1]], "41": [[7,1]]}
 
     canvas = draw_spec(frobs, local_algs, True)
     filename = "/tmp/test.svg"
