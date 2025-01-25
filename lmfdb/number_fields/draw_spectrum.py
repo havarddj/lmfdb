@@ -1,7 +1,7 @@
 import svg
 import random
 
-from dataclasses import dataclass
+# from dataclasses import dataclass
 from sage.all import (sin, cos, arctan2)
 # from utils/color import StandardColors
 
