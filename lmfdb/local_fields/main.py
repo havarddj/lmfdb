@@ -116,6 +116,22 @@ def lf_display_knowl(label, name=None):
 def local_algebra_display_knowl(labels):
     return '<a title = "{0} [lf.algebra.data]" knowl="lf.algebra.data" kwargs="labels={0}">{0}</a>' % (labels)
 
+def eisensteinformlatex(pol, unram):
+    # pol=coeffs,  unram =string
+    R = PolynomialRing(QQ, 'y')
+    Rx = PolynomialRing(R, 'x')
+    unram2 = R(unram.replace('t', 'y'))
+    unram = latex(Rx(unram.replace('t', 'x')))
+    pol = R(pol)
+    l = []
+    while pol != 0:
+        qr = pol.quo_rem(unram2)
+        l.append(qr[1])
+        pol = qr[0]
+    newpol = latex(Rx(l))
+    newpol = newpol.replace('x', '(' + unram + ')')
+    newpol = newpol.replace('y', 'x')
+    return newpol
 
 def plot_polygon(verts, polys, inds, p):
     verts = [tuple(pt) for pt in verts]
@@ -304,6 +320,19 @@ def galcolresponse(n,t,cache):
         return 'not computed'
     return group_pretty_and_nTj(n, t, cache=cache)
 
+def formatbracketcol(blist):
+    if blist == []:
+        return r'$[\ ]$'
+    if blist == '':
+        return 'not computed'
+    return f'${blist}$'
+
+def intcol(j):
+    if j == '':
+        return 'not computed'
+    return f'${j}$'
+
+
 lf_columns = SearchColumns([
     LinkCol("label", "lf.field.label", "Label", url_for_label),
     MathCol("n", "lf.degree", "$n$", short_title="degree", default=False),
@@ -316,8 +345,8 @@ lf_columns = SearchColumns([
                       ["n", "gal", "cache"],
                       galcolresponse,
                       apply_download=lambda n, t, cache: [n, t]),
-    MathCol("u", "lf.unramified_degree", "$u$", short_title="unramified degree", default=False),
-    MathCol("t", "lf.tame_degree", "$t$", short_title="tame degree", default=False),
+    ProcessedCol("u", "lf.unramified_degree", "$u$", intcol, short_title="unramified degree", default=False),
+    ProcessedCol("t", "lf.tame_degree", "$t$", intcol, short_title="tame degree", default=False),
     ListCol("visible", "lf.visible_slopes", "Visible slopes",
                     show_slopes2, default=lambda info: info.get("visible"), mathmode=True),
     MultiProcessedCol("slopes", "lf.slope_content", "Slope content",
@@ -327,8 +356,8 @@ lf_columns = SearchColumns([
     # want apply_download for download conversion
     PolynomialCol("unram", "lf.unramified_subfield", "Unram. Ext.", default=lambda info:info.get("visible")),
     ProcessedCol("eisen", "lf.eisenstein_polynomial", "Eisen. Poly.", default=lambda info:info.get("visible"), mathmode=True, func=format_eisen),
-    MathCol("ind_of_insep", "lf.indices_of_inseparability", "Ind. of Insep.", default=lambda info: info.get("ind_of_insep")),
-    MathCol("associated_inertia", "lf.associated_inertia", "Assoc. Inertia", default=lambda info: info.get("associated_inertia"))],
+    ProcessedCol("ind_of_insep", "lf.indices_of_inseparability", "Ind. of Insep.", formatbracketcol, default=lambda info: info.get("ind_of_insep")),
+    ProcessedCol("associated_inertia", "lf.associated_inertia", "Assoc. Inertia", formatbracketcol, default=lambda info: info.get("associated_inertia"))],
     db_cols=["c", "coeffs", "e", "f", "gal", "label", "n", "p", "slopes", "t", "u", "visible", "ind_of_insep", "associated_inertia","unram","eisen"])
 
 def lf_postprocess(res, info, query):
@@ -446,18 +475,21 @@ def render_field_webpage(args):
         if 'wild_gap' in data and data['wild_gap'] != [0,0]:
             wild_inertia = abstract_group_display_knowl(f"{data['wild_gap'][0]}.{data['wild_gap'][1]}")
         else:
-            wild_inertia = 'data not computed'
+            wild_inertia = 'Not computed'
 
+        if data['f'] == 1 or data['e'] == 1:
+            thepolynomial = raw_typeset(polynomial)
+        else:
+            eform = '$' + eisensteinformlatex(data['coeffs'], data['unram']) + '$'
+            thepolynomial = raw_typeset(polynomial, eform)
         info.update({
-                    'polynomial': raw_typeset(polynomial),
+                    'polynomial': thepolynomial,
                     'n': data['n'],
                     'p': p,
                     'c': data['c'],
                     'e': data['e'],
                     'f': data['f'],
-                    't': data['t'],
-                    'u': data['u'],
-                    'rf': lf_display_knowl( rflabel, name=printquad(data['rf'], p)),
+                    'rf': lf_display_knowl(rflabel, name=printquad(data['rf'], p)),
                     'base': lf_display_knowl(str(p)+'.1.0.1', name='$%s$' % Qp),
                     'hw': data['hw'],
                     'visible': show_slopes(data['visible']),
@@ -469,17 +501,21 @@ def render_field_webpage(args):
                     'autstring': autstring,
                     'subfields': format_subfields(data['subfield'],data['subfield_mult'],p),
                     'aut': data['aut'],
-                    'ram_polygon_plot': plot_polygon(data['ram_poly_vert'], data['residual_polynomials'], data['ind_of_insep'], p),
-                    'residual_polynomials': ",".join(f"${teXify_pol(poly)}$" for poly in data['residual_polynomials']),
-                    'associated_inertia': ",".join(f"${ai}$" for ai in data['associated_inertia']),
                     })
-        friends=[]
+        friends = []
         if 'slopes' in data:
             info.update({'slopes': show_slopes(data['slopes'])})
         if 'inertia' in data:
             info.update({'inertia': group_display_inertia(data['inertia'])})
-        if 'gms' in data:
-            info.update({'gms': data['gms']})
+        for k in ['gms', 't', 'u']:
+            if k in data:
+                info.update({k: data[k]})
+        if 'ram_poly_vert' in data:
+            info.update({'ram_polygon_plot': plot_polygon(data['ram_poly_vert'], data['residual_polynomials'], data['ind_of_insep'], p)})
+        if 'residual_polynomials' in data:
+            info.update({'residual_polynomials': ",".join(f"${teXify_pol(poly)}$" for poly in data['residual_polynomials'])})
+        if 'associated_inertia' in data:
+            info.update({'associated_inertia': ",".join(f"${ai}$" for ai in data['associated_inertia'])})
         if 'galois_label' in data:
             info.update({'gal': group_pretty_and_nTj(gn, gt, True),
                          'galphrase': galphrase,
@@ -491,7 +527,7 @@ def render_field_webpage(args):
             friends.append(('Discriminant root field', rffriend))
         if data['is_completion']:
             friends.append(('Number fields with this completion',
-                url_for('number_fields.number_field_render_webpage')+"?completions={}".format(label) ))
+                url_for('number_fields.number_field_render_webpage')+"?completions={}".format(label)))
         downloads = [('Underlying data', url_for('.lf_data', label=label))]
 
         bread = get_bread([(label, ' ')])
