@@ -58,7 +58,7 @@ def draw_spec(frobs, local_alg_dict, colors=True, rings=False, num_primes=100, g
     # as optional arguments; feel free to change this
 
     # (absolute) height of svg
-    height = 150 if gaga else 200 
+    height = 100 if gaga else 200 
 
     # (absolute) width of svg
     width = 200 if gaga else (num_primes+3)*50
