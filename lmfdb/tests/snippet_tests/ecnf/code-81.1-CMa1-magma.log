@@ -1,0 +1,16 @@
+R<x> := PolynomialRing(Rationals()); K<a> := NumberField(R![1, -1, 1]);
+E := EllipticCurve([K![0,0],K![0,0],K![1,0],K![0,0],K![0,0]]);
+Conductor(E);
+Norm(Conductor(E));
+Discriminant(E);
+Norm(Discriminant(E));
+jInvariant(E);
+HasComplexMultiplication(E);
+Rank(E);
+gens := [P:P in Generators(E)|Order(P) eq 0]; gens;
+[Height(P):P in gens];
+Regulator(gens);
+T,piT := TorsionSubgroup(E); Invariants(T);
+Order(T);
+[piT(P) : P in Generators(T)];
+LocalInformation(E);

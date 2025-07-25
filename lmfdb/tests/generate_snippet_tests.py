@@ -17,7 +17,7 @@ sys.path.insert(0, "/".join(os.path.realpath(__file__).split("/")[0:-3]))
 exec_dict = {'sage': 'sage --simple-prompt',
              'magma': 'magma -b',
              'oscar': 'julia',
-             'gp': "gp -D prompt='gp>' -D breakloop=0 -D colors='no,no,no,no,no,no,no' -D readline=0"}
+             'gp': "gp -D prompt='gp>' -D breakloop=0 -D colors='no,no,no,no,no,no,no' -D readline=0 -q"}
 prompt_dict = {'sage': 'sage:', 'magma': 'magma>', 'oscar': 'julia>', 'gp': 'gp>'}
 comment_dict = {'magma': '//', 'sage': '#',
                          'gp': '\\\\', 'pari': '\\\\', 'oscar': '#', 'gap': '#'}
@@ -115,7 +115,7 @@ def _eval_code_file(data, lang, proc, logfile):
 
 
 
-def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False):
+def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, only_langs = None):
     """
     Create tests for snippet files in yaml_file_path if not None, else for all
     code*.yaml files in the lmfdb, except for those with languages in ignore_langs
@@ -144,9 +144,12 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False):
         if 'snippet_test' in contents:
             langs |= set(contents['prompt'].keys())
     langs -= set(ignore_langs)
+    if only_langs is not None:
+        langs &= only_langs
+    
     if 'pari' in langs:
         langs.remove('pari'); langs.add('gp')
-
+        
     print("Langs are", langs)
     # start process for languages to be tested
     processes = _start_snippet_procs(langs)
@@ -213,6 +216,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser("Generate snippet tests")
     parser.add_argument("cmd", help="*generate* test files or run *test*s", choices=['generate', 'test'])
     parser.add_argument("-i", "--ignore", help="ignore languages", action='append', nargs='+', default=[])
+    parser.add_argument("-o", "--only", help="only languages", action='append', nargs='+', default=None)
     parser.add_argument("-f", "--file", help="run on single file", type=str)
     
     args = parser.parse_args()
@@ -222,6 +226,11 @@ if __name__ == '__main__':
     else:
         yaml_path = None
     ignore_langs = [l[0] for l in args.ignore]
-    create_snippet_tests(yaml_path, ignore_langs, test= args.cmd == 'test')
+    if args.only is not None:
+        only_langs = {l[0] for l in args.only}
+    else:
+        only_langs = None
+
+    create_snippet_tests(yaml_path, ignore_langs, args.cmd == 'test', only_langs)
         
 

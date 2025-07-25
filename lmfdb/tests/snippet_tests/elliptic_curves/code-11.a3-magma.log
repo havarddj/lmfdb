@@ -1,0 +1,90 @@
+E := EllipticCurve([0, -1, 1, 0, 0]);
+WeierstrassModel(E);
+magma>E := EllipticCurve([0, -1, 1, 0, 0]);magma>E := EllipticCurve([0, -1, 1, 0, 0]);
+magma>WeierstrassModel(E);magma>WeierstrassModel(E);
+MordellWeilGroup(E);
+Generators(E);
+TorsionSubgroup(E);
+IntegralPoints(E);
+Elliptic Curve defined by y^2 = x^3 - 432*x + 8208 over Rational Field
+magma>MordellWeilGroup(E);magma>MordellWeilGroup(E);
+Abelian Group isomorphic to Z/5
+Defined on 1 generator
+Relations:
+    5*$.1 = 0
+Mapping from: Abelian Group isomorphic to Z/5
+Defined on 1 generator
+Relations:
+    5*$.1 = 0 to Set of points of E with coordinates in Rational Field given by 
+a rule [no inverse]
+true true
+magma>Generators(E);magma>Generators(E);
+[ (0 : 0 : 1) ]
+true true
+magma>TorsionSubgroup(E);magma>TorsionSubgroup(E);
+Abelian Group isomorphic to Z/5
+Defined on 1 generator
+Relations:
+    5*$.1 = 0
+magma>IntegralPoints(E);magma>IntegralPoints(E);
+Conductor(E);
+Discriminant(E);
+jInvariant(E);
+HasComplexMultiplication(E);
+FaltingsHeight(E);
+StableFaltingsHeight(E);
+Rank(E);
+AnalyticRank(E);
+[ (0 : 0 : 1), (1 : -1 : 1) ]
+[ <(0 : 0 : 1), 1>, <(1 : -1 : 1), 1> ]
+magma>Conductor(E);magma>Conductor(E);
+11
+magma>Discriminant(E);magma>Discriminant(E);
+-11
+magma>jInvariant(E);magma>jInvariant(E);
+-4096/11
+magma>HasComplexMultiplication(E);magma>HasComplexMultiplication(E);
+false
+magma>FaltingsHeight(E);magma>FaltingsHeight(E);
+-1.11272879733545325198939392807
+magma>StableFaltingsHeight(E);magma>StableFaltingsHeight(E);
+-1.11272879733545325198939392807
+magma>Rank(E);magma>Rank(E);
+0 true
+magma>AnalyticRank(E);magma>AnalyticRank(E);
+Regulator(E);
+(Discriminant(E) gt 0 select 2 else 1) * RealPeriod(E);
+TamagawaNumbers(E);
+Order(TorsionSubgroup(E));
+MordellWeilShaInformation(E);
+Lr1 where r,Lr1 := AnalyticRank(E: Precision:=12);
+/* self-contained Magma code snippet for the BSD formula (checks rank, computes analytic sha) */
+E := EllipticCurve([0, -1, 1, 0, 0]); r := Rank(E); ar,Lr1 := AnalyticRank(E: Precision := 12); assert r eq ar;
+sha := MordellWeilShaInformation(E); omega := RealPeriod(E) * (Discriminant(E) gt 0 select 2 else 1);
+reg := Regulator(E); tam := &*TamagawaNumbers(E); tor := #TorsionSubgroup(E);
+assert r eq ar; print "analytic sha:", Lr1 * tor^2 / (omega * reg * tam);
+ModularForm(E);
+ModularDegree(E);
+ManinConstant(E);
+[LocalInformation(E,p) : p in BadPrimes(E)];
+[GaloisRepresentation(E,p): p in PrimesUpTo(20)];
+0 0.25384
+magma>Regulator(E);magma>Regulator(E);
+1.00000000000000000000000000000
+magma>(Discriminant(E) gt 0 select 2 else 1) * RealPeriod(E);magma>(Discriminant(E) gt 0 select 2 else 1) * RealPeriod(E);
+6.34604652139776710844397308377
+magma>TamagawaNumbers(E);magma>TamagawaNumbers(E);
+[ 1 ]
+magma>Order(TorsionSubgroup(E));magma>Order(TorsionSubgroup(E));
+5
+magma>MordellWeilShaInformation(E);magma>MordellWeilShaInformation(E);
+[ 0, 0 ]
+[]
+[]
+magma>Lr1 where r,Lr1 := AnalyticRank(E: Precision:=12);magma>Lr1 where r,Lr1 := AnalyticRank(E: Precision:=12);
+0.253841860856
+magma>/* self-contained Magma code snippet for the BSD formula (checks rank, < gma>mula (checks rank, c                                                  omputes analytic sha) */magma>/* self-contained Magma code snippet for the BSD formula (checks rank, c\
+omputes analytic sha) */
+magma>E := EllipticCurve([0, -1, 1, 0, 0]); r := Rank(E); ar,Lr1 := AnalyticR< gma>ar,Lr1 := AnalyticRa                                                   nk(E: Precision := 12); assert r eq ar;magma>E := EllipticCurve([0, -1, 1, 0, 0]); r := Rank(E); ar,Lr1 := AnalyticRa\
+nk(E: Precision := 12); assert r eq ar;
+magma>sha := MordellWeilShaInformation(E); omega := RealPeriod(E) * (Discrimi< gma>riod(E) * (Discrimin                                  
