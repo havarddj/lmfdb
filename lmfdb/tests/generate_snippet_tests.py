@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import yaml
+import argparse
 import os, sys
 from sage.all import sage_eval
 from difflib import ndiff
@@ -11,7 +12,6 @@ from time import sleep
 
 # to ensure that imports work correctly when called from ./lmfdb: 
 sys.path.insert(0, "/".join(os.path.realpath(__file__).split("/")[0:-3]))
-from lmfdb.app import app
 
 
 exec_dict = {'sage': 'sage --simple-prompt',
@@ -62,9 +62,69 @@ def _setup_test_dir(yaml_file_path=None):
             new_dir.mkdir(parents=True)
     return path_dict
 
-def create_snippet_tests(yaml_file_path=None, ignore_langs = [], copy=False):
+def _start_snippet_procs(langs):
+    """ Return dict where keys are languages in 'langs'
+    and values are pexpect repl processes 
+    """
+    processes = {}
+    for lang in langs:
+        if lang == 'oscar':
+            print("Loading Oscar, this may take a while:")
+            spawn = pexpect.spawn(exec_dict['oscar'], ['-q', '--color=no', '--banner=no'],
+                                  echo=False, env=os.environ | {'TERM':'dumb'},
+                                  encoding="utf8")
+            # for ease of debugging julia output
+            spawn.logfile = sys.stdout
+            
+            processes['oscar'] = pexpect.replwrap.REPLWrapper(spawn, 'julia>', None)
+            processes['oscar'].run_command("using Oscar", timeout=60*10)
+            print("\nOscar loaded")
+        elif lang == 'magma':
+            # avoid '>' being detected as prompt
+            processes['magma'] = pexpect.replwrap.REPLWrapper(exec_dict[lang],
+                                                              '>',
+                                                              f'SetPrompt("{prompt_dict[lang]}");',
+                                                              prompt_dict[lang])
+        else:
+            processes[lang] = pexpect.replwrap.REPLWrapper(exec_dict[lang], prompt_dict[lang] , None)
+    return processes
+
+
+def _eval_code_file(data, lang, proc, logfile):
+    """ Evaluate code in 'data' using process 'proc' in language
+    'lang', writing output to 'logfile'
+    """
+    eval_str = ""
+    cmt = comment_dict[lang]
+    lines = [l for l in data.splitlines() if l != '' and cmt not in l[:4]]
+    with logfile.open('w') as f:
+        proc.child.logfile = f
+        for line in lines:
+            try:
+                proc.run_command(line, timeout=60)
+            except:
+                print("Timeout while running line:")
+                print(line)
+
+    # # remove stray ANSI escape characters
+    # with logfile.open('r') as f:
+    #     res = 
+    #     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    #     ansi_escape.sub('', res)
+    #     return eval_str
+
+
+
+def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False):
+    """
+    Create tests for snippet files in yaml_file_path if not None, else for all
+    code*.yaml files in the lmfdb, except for those with languages in ignore_langs
+    """
+
     path_dict = _setup_test_dir(yaml_file_path)
-    # set up fetching of command files
+
+    from lmfdb.app import app
+    
     app.config["TESTING"] = True
     # Ensure secret key is set for testing (required for session functionality like flash messages)
     if not app.secret_key:
@@ -86,31 +146,10 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], copy=False):
     langs -= set(ignore_langs)
     if 'pari' in langs:
         langs.remove('pari'); langs.add('gp')
-        
-    # start process for languages to be tested
-    processes = {}
 
-    for lang in langs:
-        if lang == 'oscar':
-            print("Loading Oscar, this may take a while:")
-            spawn = pexpect.spawn(exec_dict['oscar'], ['-q', '--color=no', '--banner=no'],
-                                  echo=False, env=os.environ | {'TERM':'dumb'},
-                                  encoding="utf8")
-            # for ease of debugging julia output
-            spawn.logfile = sys.stdout
-            
-            processes['oscar'] = pexpect.replwrap.REPLWrapper(spawn, 'julia>', None)
-            processes['oscar'].run_command("using Oscar", timeout=60*10)
-            print("\nOscar loaded")
-        elif lang == 'magma':
-            # avoid '>' being detected as prompt
-            processes['magma'] = pexpect.replwrap.REPLWrapper(exec_dict[lang],
-                                                              '>',
-                                                              f'SetPrompt("{prompt_dict[lang]}")',
-                                                              prompt_dict[lang])
-        else:
-            processes[lang] = pexpect.replwrap.REPLWrapper(exec_dict[lang], prompt_dict[lang] , None)
-                
+    print("Langs are", langs)
+    # start process for languages to be tested
+    processes = _start_snippet_procs(langs)
     print("Spawned processes for ", langs)
     
     for code_file, test_dir in path_dict.items():
@@ -124,48 +163,65 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], copy=False):
         for _, items in snippet_test.items():
             label = items['label']
             snippet_langs = {'gp' if k == 'pari' else k for k in contents['prompt'].keys()}
-            snippet_langs &= langs
+            snippet_langs &= langs # intersection of sets
+
             for lang in snippet_langs:
                 url = items['url'].format(lang=lang)
 
+                
                 filename = code_file.stem + "-" + label + "-" + lang + ".log"
-                test_target = Path(test_dir / filename)
-
-                if not test_target.exists():
-                    test_target.touch()
+                if test:
+                    old_file = filename
+                    filename += ".copy"
+                logfile = Path(test_dir / filename)
+                if not test:
+                    print("Writing data to", str(logfile))
+                
+                if not logfile.exists():
+                    logfile.touch()
 
                 data = tc.get(url).get_data(as_text=True)
-                print("Writing data to", str(test_target))
 
-                lines = [l for l in data.splitlines() if l != '' and comment_dict[lang] not in l[:4]]
+                with logfile.open('w') as f:
+                    header  = comment_dict[lang] + " Code taken from https://beta.lmfdb.org/" + str(url) +'\n\n'
+                    f.write(header)
                 
-                with test_target.open('w') as f:
-                    f.write(comment_dict[lang] + " Code taken from https://beta.lmfdb.org/" + str(url) +'\n\n')
-                    processes[lang].child.logfile = f
-                    for line in lines:
-                        try:
-                            processes[lang].run_command(line, timeout=60)
-                        except:
-                            print("Timeout while running line:")
-                            print(line)
+                _eval_code_file(data, lang, processes[lang], logfile)
+
+                with logfile.open('r') as f:
+                    if "error" in f.read():
+                        print(f"\x1b[31mWARNING\x1b[0m: found error in ./{logfile}")
                 
-                with test_target.open('r') as f:
-                    target_text = f.read()
-                    if "error" in target_text:
-                        print(f"\x1b[31mWARNING\x1b[0m: found error in ./{test_target}")
-                # remove stray ANSI escape characters
-                with test_target.open('w') as f:
-                    ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-                    f.write(ansi_escape.sub('', target_text))
+                if test:
+                    old_path = Path(test_dir / old_file)
+                    assert old_path.exists(), f"Could not find original file at ./{old_file}."
+                    with old_path.open('r') as f:
+                        old_str = f.read()
+                    with logfile.open('r') as f:
+                        if f.read() == old_str:
+                            print(f"No change in {old_path}")
+                        else:
+                            print(f"Change in {old_path}, compare with {logfile}")
+                            continue
+                    # now delete file
+                    logfile.unlink()
                 
-def compare_snippet_tests():
-    pass
-    
+
+            
 
 if __name__ == '__main__':
-    create_snippet_tests(ignore_langs=['oscar'])
-    # create_snippet_tests()
-
-    # yaml_path = Path('./lmfdb/galois_groups/code.yaml')
-    # create_snippet_tests(yaml_path)
+    parser = argparse.ArgumentParser("Generate snippet tests")
+    parser.add_argument("cmd", help="*generate* test files or run *test*s", choices=['generate', 'test'])
+    parser.add_argument("-i", "--ignore", help="ignore languages", action='append', nargs='+', default=[])
+    parser.add_argument("-f", "--file", help="run on single file", type=str)
+    
+    args = parser.parse_args()
+    if args.file:
+        yaml_path = Path(args.file) 
+        assert yaml_path.exists(), f"File {args.file} does not exist."
+    else:
+        yaml_path = None
+    ignore_langs = [l[0] for l in args.ignore]
+    create_snippet_tests(yaml_path, ignore_langs, test= args.cmd == 'test')
+        
 
