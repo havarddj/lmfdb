@@ -1,0 +1,50 @@
+E := EllipticCurve([0, 0, 1, -1, 0]);
+WeierstrassModel(E);
+MordellWeilGroup(E);
+Generators(E);
+TorsionSubgroup(E);
+IntegralPoints(E);
+Conductor(E);
+Discriminant(E);
+jInvariant(E);
+HasComplexMultiplication(E);
+FaltingsHeight(E);
+StableFaltingsHeight(E);
+Rank(E);
+AnalyticRank(E);
+Regulator(E);
+(Discriminant(E) gt 0 select 2 else 1) * RealPeriod(E);
+TamagawaNumbers(E);
+                 ant(E) gt 0 select 2 else 1);magma>sha := MordellWeilShaInformation(E); omega := RealPeriod(E) * (Discrimin\
+ant(E) gt 0 select 2 else 1);
+magma>reg := Regulator(E); tam := &*TamagawaNumbers(E); tor := #TorsionSubgro< gma>r := #TorsionSubgrou                                                   p(E);magma>reg := Regulator(E); tam := &*TamagawaNumbers(E); tor := #TorsionSubgrou\
+p(E);
+magma>assert r eq ar; print "analytic sha:", Lr1 * tor^2 / (omega * reg * tam< gma> (omega * reg * tam)                                                   ;magma>assert r eq ar; print "analytic sha:", Lr1 * tor^2 / (omega * reg * tam)\
+;
+analytic sha: 1.00000000000
+magma>ModularForm(E);magma>ModularForm(E);
+q - 2*q^2 - q^3 + 2*q^4 + q^5 + 2*q^6 - 2*q^7 - 2*q^9 - 2*q^10 + q^11 + O(q^12)
+magma>ModularDegree(E);magma>ModularDegree(E);
+Warning... Curve of Minimal Height is likely not the X0-optimal Curve
+5
+magma>ManinConstant(E);magma>ManinConstant(E);
+5
+magma>[LocalInformation(E,p) : p in BadPrimes(E)];magma>[LocalInformation(E,p) : p in BadPrimes(E)];
+[ <11, 1, 1, 1, I1, true> ]
+magma>[GaloisRepresentation(E,p): p in PrimesUpTo(20)];magma>[GaloisRepresentation(E,p): p in PrimesUpTo(20)];
+[
+    2-dim unramified Galois representation Unr(1+2*x+2*x^2) over Q2[40],
+    2-dim unramified Galois representation Unr(1+x+3*x^2) over Q3[40],
+    2-dim unramified Galois representation UnOrder(TorsionSubgroup(E));
+MordellWeilShaInformation(E);
+Lr1 where r,Lr1 := AnalyticRank(E: Precision:=12);
+/* self-contained Magma code snippet for the BSD formula (checks rank, computes analytic sha) */
+E := EllipticCurve([0, 0, 1, -1, 0]); r := Rank(E); ar,Lr1 := AnalyticRank(E: Precision := 12); assert r eq ar;
+sha := MordellWeilShaInformation(E); omega := RealPeriod(E) * (Discriminant(E) gt 0 select 2 else 1);
+reg := Regulator(E); tam := &*TamagawaNumbers(E); tor := #TorsionSubgroup(E);
+assert r eq ar; print "analytic sha:", Lr1 * tor^2 / (omega * reg * tam);
+ModularForm(E);
+ModularDegree(E);
+ManinConstant(E);
+[LocalInformation(E,p) : p in BadPrimes(E)];
+[GaloisRepresentation(E,p): p in PrimesUpTo(20)];

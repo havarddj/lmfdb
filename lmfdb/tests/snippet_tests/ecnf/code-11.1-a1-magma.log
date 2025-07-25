@@ -1,0 +1,53 @@
+R<x> := PolynomialRing(Rationals()); K<a> := NumberField(R![3, -1, 1]);
+E := EllipticCurve([K![0,0],K![-1,0],K![1,0],K![-7820,0],K![-263580,0]]);
+Conductor(E);
+Norm(Conductor(E));
+Discriminant(E);
+Norm(Discriminant(E));
+jInvariant(E);
+HasComplexMultiplication(E);
+Rank(E);
+gens := [P:P in Generators(E)|Order(P) eq 0]; gens;
+[Height(P):P in gens];
+Regulator(gens);
+se> ]
+magma>[GaloisRepresentation(E,p): p in PrimesUpTo(20)];magma>[GaloisRepresentation(E,p): p in PrimesUpTo(20)];
+[
+    2-dim unramified Galois representation Unr(1+2*x+2*x^2) over Q2[40],
+    2-dim unramified Galois representation Unr(1+3*x+3*x^2) over Q3[40],
+    2-dim unramified Galois representation Unr(1+2*x+5*x^2) over Q5[40],
+    2-dim unramified Galois representation Unr(1+x+7*x^2) over Q7[40],
+    2-dim unramified Galois representation Unr(1+5*x+11*x^2) over Q11[40],
+    2-dim unramified Galois representation Unr(1+2*x+13*x^2) over Q13[40],
+    2-dim unramified Galois representation Unr(1+17*x^2) over Q17[40],
+    2-dim unramified Galois representation Unr(1+19*x^2) over Q19[40]
+]
+magma>R<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);magma>R<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);
+
+>> R<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);
+                                          ^
+Runtime error in 'Name': Bad argument types
+
+magma>DefiningPolynomial(K);magma>DefiningPolynomial(K);
+x - 1
+magma>Degree(K);magma>Degree(K);
+1
+magma>Signature(K);magma>Signature(K);
+1 0
+magma>OK := Integers(K); Discriminant(OK);magma>OK := Integers(K); Discriminant(OK);
+1
+magma>PrimeDivisors(Discriminant(OK));magma>PrimeDivisors(Discriminant(OK));
+[]
+magma>Automorphisms(K);magma>Automorphisms(K);
+[
+    Mapping from: FldRat: K to FldRat: K given by a rule [no inverse]
+]
+magma>IntegralBasis(K);magma>IntegralBasis(K);
+[ 1 ]
+magma>ClassGroup(K);magma>ClassGroup(K);
+Abelian Group of order 1
+magma>UK, fUK := UnitGroup(K);magma>UK, fUK := UnitGroup(K);
+magmaT,piT := TorsionSubgroup(E); Invariants(T);
+Order(T);
+[piT(P) : P in Generators(T)];
+LocalInformation(E);

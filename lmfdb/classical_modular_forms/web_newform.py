@@ -13,7 +13,7 @@ from sage.databases.cremona import cremona_letter_code, class_to_int
 
 from lmfdb import db
 from lmfdb.utils import (
-    coeff_to_power_series,
+    coeff_to_power_series, coeff_to_poly,
     display_float, display_complex, round_CBF_to_half_int, polyquo_knowl,
     display_knowl, factor_base_factorization_latex,
     integer_options, names_and_urls, web_latex_factored_integer, prop_int_pretty,
@@ -412,11 +412,11 @@ class WebNewform():
             label = '%s.%s' % (self.label, self.embedding_label)
             downloads.append(('Coefficient data to text', url_for('.download_embedded_newform', label=label)))
         downloads.append(
-                ('Code to Magma', url_for(".cmf_code_download", label=self.label, download_type='magma')))
+                ('Magma commands', url_for(".cmf_code_download", label=self.label, download_type='magma')))
         downloads.append(
-                ('Code to PariGP', url_for(".cmf_code_download", label=self.label, download_type='pari')))
+                ('PariGP commands', url_for(".cmf_code_download", label=self.label, download_type='pari')))
         downloads.append(
-                ('Code to SageMath', url_for(".cmf_code_download", label=self.label, download_type='sage')))
+                ('SageMath commands', url_for(".cmf_code_download", label=self.label, download_type='sage')))
 
         downloads.append(('Underlying data', url_for('.mf_data', label=label)))
         return downloads
@@ -724,9 +724,12 @@ class WebNewform():
                                                           display_knowl('cmf.newspace','newspace'),self.display_newspace())
         return desc
 
-    def defining_polynomial(self, separator=''):
+    def defining_polynomial(self, separator='', latex_only=False):
         if self.field_poly:
-            return raw_typeset_poly(self.field_poly, superscript=True, extra=separator)
+            if latex_only:
+                return r'\(%s\)' % latex(coeff_to_poly(self.field_poly))
+            else:
+                return raw_typeset_poly(self.field_poly, superscript=True, extra=separator)
         return None
 
     def Qnu(self):
@@ -870,7 +873,7 @@ function switch_basis(btype) {
                 Frac = r'\frac{1}{%s}(%s)' % (den, Num)
             return r'\(\beta = %s\)' % Frac
         elif self.hecke_ring_power_basis:
-            return r'a root \(\beta\) of the polynomial %s' % (self.defining_polynomial())
+            return r'a root \(\beta\) of the polynomial %s' % (self.defining_polynomial(latex_only=True))
         else:
             if self.dim <= 5:
                 betas = ",".join(r"\beta_%s" % (i) for i in range(1, self.dim))

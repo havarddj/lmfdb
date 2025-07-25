@@ -1,0 +1,32 @@
+G := TransitiveGroup(11,6);
+>UnitRank(K);magma>UnitRank(K);
+
+>> UnitRank(K);
+           ^
+Runtime error in 'UnitRank': Bad argument types
+Argument types given: FldRat
+
+magma>K!f(TU.1) where TU,f is TorsionUnitGroup(K);magma>K!f(TU.1) where TU,f is TorsionUnitGroup(K);
+-1
+magma>[K|fUK(g): g in Generators(UK)];magma>[K|fUK(g): g in Generators(UK)];
+[ -1 ]
+magma>Regulator(K);magma>Regulator(K);
+
+>> Regulator(K);
+            ^
+Runtime error in 'Regulator': Bad argument types
+Argument types given: FldRat
+
+magma>/* self-contained Magma code snippet to compute the analytic class numb< gma>analytic class numbe                                                   r formula */magma>/* self-contained Magma code snippet to compute the analytic class numbe\
+r formula */
+magma>Qx<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);magma>Qx<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);
+
+>> Qx<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);
+                                           ^
+Runtime error in 'Name': Bad argument types
+
+magma>OK := Integers(K); DK := Discriminant(OK);magma>OK := Integers(K); DK := Discriminant(OK);
+magma>UK, fUK := UnitGroup(OK); clK, fclK := ClassGroup(OK);magma>UK, fUK := UnitGroup(OK); clK, fclK := ClassGroup(OK);
+magma>r1,r2 := Signature(K); RK := Regulator(K); RR := Parent(RK);magma>r1,r2 := Signature(K); RK := Regulator(K); RR := Parent(RK);
+
+>> r1,r2 := Signature(K); RK := Regulator(K); RR := Parent

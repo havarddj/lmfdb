@@ -1,0 +1,62 @@
+R<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);
+DefiningPolynomial(K);
+r(1-x+5*x^2) over Q5[40],
+    2-dim unramified Galois representation Unr(1+2*x+7*x^2) over Q7[40],
+    2-dim Galois representation Unr(11)*SP(2) over Q11[40],
+    2-dim unramified Galois representation Unr(1-4*x+13*x^2) over Q13[40],
+    2-dim unramified Galois representation Unr(1+2*x+17*x^2) over Q17[40],
+    2-dim unramified Galois representation Unr(1+19*x^2) over Q19[40]
+]
+magma>E := EllipticCurve([0, 0, 1, -1, 0]);magma>E := EllipticCurve([0, 0, 1, -1, 0]);
+magma>WeierstrassModel(E);magma>WeierstrassModel(E);
+Elliptic Curve defined by y^2 = x^3 - 1296*x + 11664 over Rational Field
+magma>MordellWeilGroup(E);magma>MordellWeilGroup(E);
+Abelian Group isomorphic to Z
+Defined on 1 generator (free)
+Mapping from: Abelian Group isomorphic to Z
+Defined on 1 generator (free) to Set of points of E with coordinates in Rational
+Field given by a rule [no inverse]
+true true
+magma>Generators(E);magma>Generators(E);
+[ (0 : 0 : 1) ]
+true true
+magma>TorsionSubgroup(E);magma>TorsionSubgroup(E);
+Abelian Group of order 1
+magma>IntegralPoints(E);magma>IntegralPoints(E);
+[ (-1 : -1 : 1), (0 : 0 : 1), (1 : 0 : 1), (2 : -3 : 1), (6 : 14 : 1) ]
+[ <(-1 : -1 : 1), 1>, <(0 : 0 : 1), 1>, <(1 : 0 : 1), 1>, <(2 : -3 : 1), 1>, <(6
+: 14 : 1), 1> ]
+magma>Conductor(E);magma>Conductor(E);
+37
+magma>Discriminant(E);magma>Discriminant(E);
+37
+magma>jInvariant(E);magma>jInvariant(E);
+110592/37
+magma>HasComplexMultiplication(E);magma>HasComplexMultiplication(E);
+false
+magma>FaltingsHeight(E);magma>FaltingsHeight(E);
+-0.996542207637367147946563443571
+magma>StableFaltingsHeight(E);magma>StableFaltingsHeight(E);
+-0.996542207637367147946563443571
+magma>Rank(E);Degree(K);
+Signature(K);
+OK := Integers(K); Discriminant(OK);
+PrimeDivisors(Discriminant(OK));
+Automorphisms(K);
+IntegralBasis(K);
+ClassGroup(K);
+UK, fUK := UnitGroup(K);
+UnitRank(K);
+K!f(TU.1) where TU,f is TorsionUnitGroup(K);
+[K|fUK(g): g in Generators(UK)];
+Regulator(K);
+/* self-contained Magma code snippet to compute the analytic class number formula */
+Qx<x> := PolynomialRing(Rationals()); K<a> := NumberField(x);
+OK := Integers(K); DK := Discriminant(OK);
+UK, fUK := UnitGroup(OK); clK, fclK := ClassGroup(OK);
+r1,r2 := Signature(K); RK := Regulator(K); RR := Parent(RK);
+hK := #clK; wK := #TorsionSubgroup(UK);
+2^r1 * (2*Pi(RR))^r2 * RK * hK / (wK * Sqrt(RR!Abs(DK)));
+L := Subfields(K); L[2..#L];
+G = GaloisGroup(K);
+p := 7; [<pr[2], Valuation(Norm(pr[1]), p)> : pr in Factorization(p*Integers(K))];
