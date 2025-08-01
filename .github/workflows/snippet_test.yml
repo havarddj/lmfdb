@@ -35,8 +35,8 @@ jobs:
           hashFiles('.environment.yml') }}
 
     - uses: julia-actions/setup-julia@v2
-        with:
-          version: '1.10'
+      with:
+        version: '1.10'
 
 
     - name: Run install script
