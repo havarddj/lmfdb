@@ -64,10 +64,6 @@ jobs:
         sage -pip install -r requirements.txt
         pip install pyflakes pylint pycodestyle ruff
 
-    - name: install julia
-      steps:
-        - run: julia -e 'println("Hello World")'
-
     - name: Test snippets
       steps:
       - uses: actions/checkout@v4
