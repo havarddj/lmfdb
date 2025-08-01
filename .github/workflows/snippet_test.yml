@@ -34,6 +34,9 @@ jobs:
           ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
           hashFiles('.environment.yml') }}
 
+    - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
 
 
     - name: Run install script
@@ -65,14 +68,8 @@ jobs:
         pip install pyflakes pylint pycodestyle ruff
 
     - name: Test snippets
-      steps:
-      - uses: actions/checkout@v4
-      - uses: julia-actions/setup-julia@v2
-        with:
-          version: '1.10'
-
-      - if: matrix.files != 'lint'
-        shell: bash -l {0}
-        run: |
-          sage -python lmfdb/tests/generate_snippet_tests.py test
+      if: matrix.files != 'lint'
+      shell: bash -l {0}
+      run: |
+        sage -python lmfdb/tests/generate_snippet_tests.py test
         
