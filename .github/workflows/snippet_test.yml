@@ -64,14 +64,17 @@ jobs:
         sage -pip install -r requirements.txt
         pip install pyflakes pylint pycodestyle ruff
 
-    - name: Test snippets
-      if: matrix.files != 'lint'
-      shell: bash -l {0}
+    - name: install julia
       steps:
         - uses: actions/checkout@v4
         - uses: julia-actions/setup-julia@v2
           with:
             version: '1.10'
-        - run: |
-            sage -python lmfdb/tests/generate_snippet_tests.py test
+        - run: julia -e 'println("Hello World")'
+
+    - name: Test snippets
+      if: matrix.files != 'lint'
+      shell: bash -l {0}
+      run: |
+        sage -python lmfdb/tests/generate_snippet_tests.py test
         
