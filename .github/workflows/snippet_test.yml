@@ -8,7 +8,7 @@ on:
 jobs:
   snippet-test:
     runs-on: ubuntu-latest
-    name: Snippet test sage
+    name: Snippet test (sage, gp, julia)
     steps:
     - uses: actions/checkout@v3
 
@@ -64,10 +64,16 @@ jobs:
         sage -pip install -r requirements.txt
         pip install pyflakes pylint pycodestyle ruff
 
+    - name: install julia
+      steps:
+        - uses: actions/checkout@v4
+        - uses: julia-actions/setup-julia@v2
+          with:
+            version: '1.10'
 
     - name: Test snippets
       if: matrix.files != 'lint'
       shell: bash -l {0}
       run: |
-        sage -python lmfdb/tests/generate_snippet_tests.py test -o sage
+        sage -python lmfdb/tests/generate_snippet_tests.py test
         
