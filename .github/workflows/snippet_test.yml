@@ -66,15 +66,17 @@ jobs:
 
     - name: install julia
       steps:
-        - uses: actions/checkout@v4
-        - uses: julia-actions/setup-julia@v2
-          with:
-            version: '1.10'
         - run: julia -e 'println("Hello World")'
 
     - name: Test snippets
-      if: matrix.files != 'lint'
-      shell: bash -l {0}
-      run: |
-        sage -python lmfdb/tests/generate_snippet_tests.py test
+      steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+
+      - if: matrix.files != 'lint'
+        shell: bash -l {0}
+        run: |
+          sage -python lmfdb/tests/generate_snippet_tests.py test
         
