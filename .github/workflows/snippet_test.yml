@@ -82,11 +82,11 @@ jobs:
 
         # Check if the diff file is empty
         if [ -s changes.diff ]; then
-          echo "::set-output diff_exists=true"
-          echo "Diff found!"
-        else
           echo "::set-output diff_exists=false"
           echo "No diff found."
+        else
+          echo "::set-output diff_exists=true"
+          echo "Diff found!"
         fi
 
     - name: Upload diff as artifact
