@@ -82,22 +82,22 @@ jobs:
 
         # Check if the diff file is empty
         if [ -s changes.diff ]; then
-          echo "::set-output diff_exists=false"
-          echo "No diff found."
-        else
           echo "::set-output diff_exists=true"
           echo "Diff found!"
+        else
+          echo "::set-output diff_exists=false"
+          echo "No diff found."
         fi
 
     - name: Upload diff as artifact
-      if: steps.color-selector.outputs.diff_exists == true
+      if: steps.diff_check.outputs.diff_exists == true
       uses: actions/upload-artifact@v4
       with:
         name: repo-diff
         path: changes.diff
 
     - name: Fail the job if diff was found
-      if: steps.color-selector.outputs.diff_exists == true
+      if: steps.diff_check.outputs.diff_exists == true
       run: |
         echo "Nontrivial diff detected. See the 'repo-diff' artifact for details."
         exit 1
