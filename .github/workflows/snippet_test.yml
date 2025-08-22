@@ -72,7 +72,7 @@ jobs:
       if: matrix.files != 'lint'
       shell: bash -l {0}
       run: |
-        sage -python lmfdb/tests/generate_snippet_tests.py generate
+        sage -python lmfdb/tests/generate_snippet_tests.py generate -i oscar -i magma
 
     - name: Check for diff
       id: diff_check
