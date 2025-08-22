@@ -71,5 +71,37 @@ jobs:
       if: matrix.files != 'lint'
       shell: bash -l {0}
       run: |
-        sage -python lmfdb/tests/generate_snippet_tests.py test
-        
+        sage -python lmfdb/tests/generate_snippet_tests.py generate
+
+    - name: Check for diff
+      id: diff_check
+      run: |
+        # Get the diff and save it to a file.
+        # This command will not fail the step.
+        git diff --relative > changes.diff
+
+        # Check if the diff file is empty
+        if [ -s changes.diff ]; then
+          echo "{diff_exists}={true}" >> $GITHUB_OUTPUT
+          echo "Diff found!"
+        else
+          echo "{diff_exists}={false}" >> $GITHUB_OUTPUT
+          echo "No diff found."
+        fi
+
+    - name: Upload diff as artifact
+      env:
+        DIFF_EXISTS: ${{ steps.color-selector.outputs.diff_exists }}
+      if: $DIFF_EXISTS == true
+      uses: actions/upload-artifact@v4
+      with:
+        name: repo-diff
+        path: changes.diff
+
+    - name: Fail the job if diff was found
+      env:
+        DIFF_EXISTS: ${{ steps.color-selector.outputs.diff_exists }}
+      if: $DIFF_EXISTS == true
+      run: |
+        echo "Nontrivial diff detected. See the 'repo-diff' artifact for details."
+        exit 1
