@@ -163,6 +163,9 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
 
     assert lmfdb.website
     from lmfdb import db
+    for table in db.tablenames:
+        db[table].slow_cutoff = 1e5
+
 
     langs = set()
     for code_file in path_dict.keys():
