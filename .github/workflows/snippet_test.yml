@@ -1,9 +1,10 @@
 name: Snippet Tests
 
 on:
-  workflow_dispatch: {}
   schedule:
     - cron: '0 0 1,15 * *'
+  workflow_dispatch: {}
+
 
 jobs:
   snippet-test:
@@ -90,18 +91,14 @@ jobs:
         fi
 
     - name: Upload diff as artifact
-      env:
-        DIFF_EXISTS: ${{ steps.color-selector.outputs.diff_exists }}
-      if: $DIFF_EXISTS == true
+      if: steps.color-selector.outputs.diff_exists == true
       uses: actions/upload-artifact@v4
       with:
         name: repo-diff
         path: changes.diff
 
     - name: Fail the job if diff was found
-      env:
-        DIFF_EXISTS: ${{ steps.color-selector.outputs.diff_exists }}
-      if: $DIFF_EXISTS == true
+      if: steps.color-selector.outputs.diff_exists == true
       run: |
         echo "Nontrivial diff detected. See the 'repo-diff' artifact for details."
         exit 1
