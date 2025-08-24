@@ -78,26 +78,15 @@ jobs:
       id: diff_check
       run: |
         # Get the diff and save it to a file.
-        git diff --relative > changes.diff
-
-        # Check if the diff file is empty
-        if [ -s changes.diff ]; then
-          echo "::set-output diff_exists=true"
-          echo "Diff found!"
-        else
-          echo "::set-output diff_exists=false"
-          echo "No diff found."
-        fi
+        git diff --relative --exit-code > changes.diff
 
     - name: Upload diff as artifact
-      if: steps.diff_check.outputs.diff_exists == true
-      uses: actions/upload-artifact@v4
-      with:
-        name: repo-diff
-        path: changes.diff
+      
+      if: ${{ failure() && steps.diff_check.conclusion == 'failure' }}
+      steps:
+        - run: echo "Nontrivial diff detected. See the 'repo-diff' artifact for details."
+        - uses: actions/upload-artifact@v4
+          with:
+            name: repo-diff
+            path: changes.diff
 
-    - name: Fail the job if diff was found
-      if: steps.diff_check.outputs.diff_exists == true
-      run: |
-        echo "Nontrivial diff detected. See the 'repo-diff' artifact for details."
-        exit 1
