@@ -9,7 +9,7 @@ on:
 jobs:
   snippet-test:
     runs-on: ubuntu-latest
-    name: Snippet test (sage, gp, julia)
+    name: Snippet test
     steps:
     - uses: actions/checkout@v3
 
@@ -72,7 +72,7 @@ jobs:
       if: matrix.files != 'lint'
       shell: bash -l {0}
       run: |
-        sage -python lmfdb/tests/generate_snippet_tests.py generate -i oscar -i magma
+        sage -python lmfdb/tests/generate_snippet_tests.py generate -i magma
 
     - name: Check for diff
       id: diff_check
