@@ -73,5 +73,5 @@ jobs:
       run: |
         sage -python lmfdb/tests/generate_snippet_tests.py generate -i oscar -i magma
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v7
