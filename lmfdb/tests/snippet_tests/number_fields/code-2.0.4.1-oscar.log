@@ -32,23 +32,14 @@ julia> basis(OK)
  _a
 
 julia> class_group(K)
-(Z/1, ClassGroup map of 
-Set of ideals of OK)
+(Z/1, Class group map of set of ideals of OK)
 
 julia> UK, fUK = unit_group(OK)
 (Z/4, UnitGroup map of Maximal order of number field of degree 2 over QQ
-with basis [1, _a]
 )
 
 julia> rank(UK)
-ERROR: rank(::FinGenAbGroup) has been renamed to torsion_free_rank
-Stacktrace:
- [1] error(s::String)
-   @ Base ./error.jl:35
- [2] rank(A::FinGenAbGroup)
-   @ Hecke ~/.julia/packages/Hecke/Jy3XV/src/GrpAb/GrpAbFinGen.jl:541
- [3] top-level scope
-   @ none:1
+1
 
 julia> torsion_units_generator(OK)
 -_a
