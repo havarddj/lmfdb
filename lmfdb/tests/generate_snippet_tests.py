@@ -58,7 +58,7 @@ def _setup_test_dir(yaml_file_path=None):
         if not new_dir.exists():
             print(f"Directory {new_dir} does not exist, creating.")
             new_dir.mkdir(parents=True)
-            
+
     return path_dict
 
 def _start_snippet_procs(langs):
@@ -205,7 +205,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
             label = items['label']
             snippet_langs = {'gp' if k == 'pari' else k for k in contents['prompt'].keys()}
             snippet_langs &= langs # intersection of sets
-            
+
             for lang in snippet_langs:
                 url = items['url'].format(lang=lang)
                 filename = code_file.stem + "-" + label + "-" + lang + ".log"
