@@ -4,14 +4,16 @@
 from pathlib import Path
 import yaml
 import argparse
-import os, sys
+import os
+import sys
 from sage.all import sage_eval
 from difflib import ndiff
-import pexpect, pexpect.replwrap # for communicating with processes
+import pexpect
+import pexpect.replwrap # for communicating with processes
 import re
 from time import sleep
 
-# to ensure that imports work correctly when called from ./lmfdb: 
+# to ensure that imports work correctly when called from ./lmfdb:
 sys.path.insert(0, "/".join(os.path.realpath(__file__).split("/")[0:-3]))
 
 
@@ -22,7 +24,6 @@ exec_dict = {'sage': 'sage --simple-prompt',
 prompt_dict = {'sage': 'sage:', 'magma': 'magma> ', 'oscar': 'julia>', 'gp': 'gp> '}
 comment_dict = {'magma': '//', 'sage': '#',
                          'gp': '\\\\', 'pari': '\\\\', 'oscar': '#', 'gap': '#'}
-
 
 
 # TODO: this should be run by CI when it detects changes to yaml files
@@ -43,12 +44,12 @@ def _setup_test_dir(yaml_file_path=None):
     if not test_dir.exists():
         raise Exception("Please run in same directory as test.sh")
 
-    if yaml_file_path == None:
+    if yaml_file_path is None:
         code_paths = lmfdb_dir.rglob("code*.yaml")
     else:
         code_paths = [Path(yaml_file_path)]
         assert code_paths[0].exists(), f"Specified path {yaml_file_path} does not exist"
-        
+
     path_dict = {}
     for path in code_paths:
         try:
@@ -65,7 +66,7 @@ def _setup_test_dir(yaml_file_path=None):
 
 def _start_snippet_procs(langs):
     """ Return dict where keys are languages in 'langs'
-    and values are pexpect repl processes 
+    and values are pexpect repl processes
     """
     processes = {}
     for lang in langs:
@@ -76,7 +77,7 @@ def _start_snippet_procs(langs):
                                   encoding="utf8")
             # for ease of debugging julia output
             spawn.logfile = sys.stdout
-            
+
             processes['oscar'] = pexpect.replwrap.REPLWrapper(spawn, prompt_dict[lang], None)
             processes['oscar'].run_command('using Pkg; Pkg.add("Oscar"); using Oscar', timeout=60*10)
             # conservative timeout of 10 minutes
@@ -125,7 +126,7 @@ def _eval_code_file(data, lang, proc, logfile):
         for line in lines:
             if lang == 'magma':
                 print(line)
-            
+
             try:
                 proc.run_command(line, timeout=60*3)
             except:
@@ -134,14 +135,13 @@ def _eval_code_file(data, lang, proc, logfile):
 
     # # remove stray ANSI escape characters
     # with logfile.open('r') as f:
-    #     res = 
+    #     res =
     #     ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
     #     ansi_escape.sub('', res)
     #     return eval_str
 
 
-
-def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, only_langs = None):
+def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_langs=None):
     """
     Create tests for snippet files in yaml_file_path if not None, else for all
     code*.yaml files in the lmfdb, except for those with languages in ignore_langs
@@ -150,7 +150,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
     path_dict = _setup_test_dir(yaml_file_path)
 
     from lmfdb.app import app
-    
+
     app.config["TESTING"] = True
     # Ensure secret key is set for testing (required for session functionality like flash messages)
     if not app.secret_key:
@@ -169,7 +169,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
         db[table].slow_cutoff = 1e5
     from lmfdb.knowledge.knowl import knowldb
     knowldb.slow_cutoff = 1e5
-    
+
     langs = set()
     for code_file in path_dict.keys():
         contents = yaml.load(code_file.open(), Loader=yaml.FullLoader)
@@ -178,9 +178,10 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
     langs -= set(ignore_langs)
     if only_langs is not None:
         langs &= only_langs
-    
+
     if 'pari' in langs:
-        langs.remove('pari'); langs.add('gp')
+        langs.remove('pari')
+        langs.add('gp')
     if 'magma' in langs:
         print("magma is currently not supported, run manually")
         langs.remove('magma')
@@ -203,7 +204,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
             print("(Skipping", str(code_file) + ", no key 'snippet_test' found)")
             continue
         snippet_test = contents['snippet_test']
-        
+
         # MAYBE: put this in a separate function
         for _, items in snippet_test.items():
             label = items['label']
@@ -213,7 +214,6 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
             for lang in snippet_langs:
                 url = items['url'].format(lang=lang)
 
-                
                 filename = code_file.stem + "-" + label + "-" + lang + ".log"
                 if test:
                     old_file = filename
@@ -221,7 +221,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
                 logfile = Path(test_dir / filename)
                 if not test:
                     print("Writing data to", str(logfile))
-                
+
                 if not logfile.exists():
                     logfile.touch()
 
@@ -230,7 +230,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
                 # with logfile.open('w') as f:
                 #     header  = comment_dict[lang] + " Code taken from https://beta.lmfdb.org/" + str(url) +'\n\n'
                 #     f.write(header)
-                
+
                 _eval_code_file(data, lang, processes[lang], logfile)
 
                 with logfile.open('r') as f:
@@ -238,8 +238,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
                         print(f"\x1b[31mWARNING\x1b[0m: found error in ./{logfile}")
                     if lang == 'gp' and "at top-level" in f.read():
                         print(f"\x1b[31mWARNING\x1b[0m: found error in ./{logfile}")
-                        
-                
+
                 if test:
                     old_path = Path(test_dir / old_file)
                     assert old_path.exists(), f"Could not find original file at ./{old_file}."
@@ -259,7 +258,6 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs = [], test = False, o
         for file in diff_list:
             print("Found diff between original evaluation in ", file)
 
-            
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("Generate snippet tests")
@@ -267,11 +265,11 @@ if __name__ == '__main__':
     parser.add_argument("-i", "--ignore", help="ignore languages", action='append', nargs='+', default=[])
     parser.add_argument("-o", "--only", help="only languages", action='append', nargs='+', default=None)
     parser.add_argument("-f", "--file", help="run on single file", type=str)
-    
+
     args = parser.parse_args()
 
     if args.file:
-        yaml_path = Path(args.file) 
+        yaml_path = Path(args.file)
         assert yaml_path.exists(), f"File {args.file} does not exist."
     else:
         yaml_path = None
@@ -281,7 +279,5 @@ if __name__ == '__main__':
         only_langs = {l[0] for l in args.only}
     else:
         only_langs = None
-    
-    create_snippet_tests(yaml_path, ignore_langs, args.cmd == 'test', only_langs)
-        
 
+    create_snippet_tests(yaml_path, ignore_langs, args.cmd == 'test', only_langs)
