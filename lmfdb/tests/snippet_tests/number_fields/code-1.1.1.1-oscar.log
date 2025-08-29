@@ -19,8 +19,7 @@ julia> prime_divisors(discriminant((OK)))
 ZZRingElem[]
 
 julia> automorphisms(K)
-ERROR: UndefVarError: `automorphisms` not defined in `Main`
-Suggestion: check for spelling errors or missing imports.
+ERROR: UndefVarError: `automorphisms` not defined
 Stacktrace:
  [1] top-level scope
    @ none:1
@@ -30,23 +29,14 @@ julia> basis(OK)
  1
 
 julia> class_group(K)
-(Z/1, ClassGroup map of 
-Set of ideals of OK)
+(Z/1, Class group map of set of ideals of OK)
 
 julia> UK, fUK = unit_group(OK)
 (Z/2, UnitGroup map of Maximal order of number field of degree 1 over QQ
-with basis [1]
 )
 
 julia> rank(UK)
-ERROR: rank(::FinGenAbGroup) has been renamed to torsion_free_rank
-Stacktrace:
- [1] error(s::String)
-   @ Base ./error.jl:35
- [2] rank(A::FinGenAbGroup)
-   @ Hecke ~/.julia/packages/Hecke/Jy3XV/src/GrpAb/GrpAbFinGen.jl:541
- [3] top-level scope
-   @ none:1
+1
 
 julia> torsion_units_generator(OK)
 -1
@@ -59,8 +49,7 @@ julia> regulator(K)
 1.0000
 
 julia> Qx, x = PolynomialRing(QQ); K, a = NumberField(x);
-ERROR: UndefVarError: `PolynomialRing` not defined in `Main`
-Suggestion: check for spelling errors or missing imports.
+ERROR: UndefVarError: `PolynomialRing` not defined
 Stacktrace:
  [1] top-level scope
    @ none:1
@@ -83,13 +72,13 @@ julia> G, Gtx = galois_group(K); G, transitive_group_identification(G)
 ERROR: ArgumentError: degree must be positive, not 0
 Stacktrace:
  [1] macro expansion
-   @ ~/.julia/packages/AbstractAlgebra/lYBCD/src/Assertions.jl:602 [inlined]
+   @ ~/.julia/packages/AbstractAlgebra/TVkLv/src/Assertions.jl:602 [inlined]
  [2] has_transitive_groups(deg::Int64)
-   @ Oscar ~/.julia/packages/Oscar/hVsTF/src/Groups/libraries/transitivegroups.jl:52
+   @ Oscar ~/.julia/packages/Oscar/T5Jnd/src/Groups/libraries/transitivegroups.jl:52
  [3] macro expansion
-   @ ~/.julia/packages/AbstractAlgebra/lYBCD/src/Assertions.jl:601 [inlined]
+   @ ~/.julia/packages/AbstractAlgebra/TVkLv/src/Assertions.jl:601 [inlined]
  [4] transitive_group_identification(G::PermGroup)
-   @ Oscar ~/.julia/packages/Oscar/hVsTF/src/Groups/libraries/transitivegroups.jl:145
+   @ Oscar ~/.julia/packages/Oscar/T5Jnd/src/Groups/libraries/transitivegroups.jl:149
  [5] top-level scope
    @ none:1
 
