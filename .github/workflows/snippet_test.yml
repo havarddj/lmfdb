@@ -41,8 +41,8 @@ jobs:
         version: '1'          # latest version
 
     - name: Load Julia packages from cache
-        id: julia-cache
-        uses: julia-actions/cache@v2      
+      id: julia-cache
+      uses: julia-actions/cache@v2      
 
     - name: Install Oscar
       shell: bash -l {0}
