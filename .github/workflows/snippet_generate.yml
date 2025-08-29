@@ -34,10 +34,21 @@ jobs:
           ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{
           hashFiles('.environment.yml') }}
 
-    - uses: julia-actions/setup-julia@v2
+    - name: Install Julia
+      uses: julia-actions/setup-julia@v2
       with:
-        version: '1.10'
+        version: '1'          # latest version
 
+    - name: Load Julia packages from cache
+        id: julia-cache
+        uses: julia-actions/cache@v2      
+
+    - name: Install Oscar
+      shell: bash -l {0}
+      run: |
+        julia -e 'using Pkg; Pkg.add("Oscar"); using Oscar'
+
+        
     - name: Run install script
       # Only need to run install when deps has been changed
       if: steps.condacache.outputs.cache-hit != 'true'
