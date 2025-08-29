@@ -26,10 +26,6 @@ comment_dict = {'magma': '//', 'sage': '#',
                          'gp': '\\\\', 'pari': '\\\\', 'oscar': '#', 'gap': '#'}
 
 
-# TODO: this should be run by CI when it detects changes to yaml files
-# TODO: also write CI to run on crontab, testing this every X weeks
-
-
 def _setup_test_dir(yaml_file_path=None):
     """ Return dictionary with pair(s) 'yaml-file-path': 'test-file-path'.
     If yaml-file-path is none, search through all code*.yaml files in ./lmfdb
@@ -62,6 +58,7 @@ def _setup_test_dir(yaml_file_path=None):
         if not new_dir.exists():
             print(f"Directory {new_dir} does not exist, creating.")
             new_dir.mkdir(parents=True)
+            
     return path_dict
 
 def _start_snippet_procs(langs):
@@ -187,13 +184,12 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
         langs.remove('magma')
     if len(langs) == 0:
         print("No valid languages selected")
-        return 0
+        return 1
 
-    print("Langs are", langs)
+    print("Evaluating snippets written in", ", ".join(langs))
 
     # start process for languages to be tested
     processes = _start_snippet_procs(langs)
-    print("Spawned processes for ", langs)
 
     if test:
         diff_list = []
@@ -205,32 +201,26 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
             continue
         snippet_test = contents['snippet_test']
 
-        # MAYBE: put this in a separate function
         for _, items in snippet_test.items():
             label = items['label']
             snippet_langs = {'gp' if k == 'pari' else k for k in contents['prompt'].keys()}
             snippet_langs &= langs # intersection of sets
-
+            
             for lang in snippet_langs:
                 url = items['url'].format(lang=lang)
-
                 filename = code_file.stem + "-" + label + "-" + lang + ".log"
+
                 if test:
                     old_file = filename
                     filename += ".copy"
-                logfile = Path(test_dir / filename)
-                if not test:
-                    print("Writing data to", str(logfile))
 
+                logfile = Path(test_dir / filename)
                 if not logfile.exists():
                     logfile.touch()
 
                 data = tc.get(url).get_data(as_text=True)
 
-                # with logfile.open('w') as f:
-                #     header  = comment_dict[lang] + " Code taken from https://beta.lmfdb.org/" + str(url) +'\n\n'
-                #     f.write(header)
-
+                print("Writing data to", str(logfile))
                 _eval_code_file(data, lang, processes[lang], logfile)
 
                 with logfile.open('r') as f:
@@ -257,6 +247,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
     if test:
         for file in diff_list:
             print("Found diff between original evaluation in ", file)
+    return 0
 
 
 if __name__ == '__main__':
