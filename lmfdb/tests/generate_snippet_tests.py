@@ -196,10 +196,11 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
             continue
         snippet_test = contents['snippet_test']
 
+        snippet_langs = {'gp' if k == 'pari' else k for k in contents['prompt'].keys()}
+        snippet_langs &= langs # intersection of sets
+
         for _, items in snippet_test.items():
             label = items['label']
-            snippet_langs = {'gp' if k == 'pari' else k for k in contents['prompt'].keys()}
-            snippet_langs &= langs # intersection of sets
 
             for lang in snippet_langs:
                 url = items['url'].format(lang=lang)
@@ -219,7 +220,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
                 _eval_code_file(data, lang, processes[lang], logfile)
 
                 with logfile.open('r') as f:
-                    if "error" in f.read() or (lang == 'gp' and "at top-level" in f.read()):
+                    if "error" in f.read() or "at top-level" in f.read():
                         print(f"::warning file=./{logfile}::Error found in evaluation")
 
                 if test:
