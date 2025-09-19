@@ -29,7 +29,7 @@ jobs:
 
       - name: Report diff
         if: ${{ failure() && steps.diff_check.conclusion == 'failure' }}
-        run: echo "warning::Nontrivial diff detected. See the 'repo-diff' artifact for details."
+        run: echo "::warning::Nontrivial diff detected. See the 'repo-diff' artifact for details."
 
       - name: Upload diff as artifact
         if: ${{ failure() && steps.diff_check.conclusion == 'failure' }}

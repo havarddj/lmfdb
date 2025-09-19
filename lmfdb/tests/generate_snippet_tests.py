@@ -219,10 +219,8 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
                 _eval_code_file(data, lang, processes[lang], logfile)
 
                 with logfile.open('r') as f:
-                    if "error" in f.read():
-                        print(f"\x1b[31mWARNING\x1b[0m: found error in ./{logfile}")
-                    if lang == 'gp' and "at top-level" in f.read():
-                        print(f"\x1b[31mWARNING\x1b[0m: found error in ./{logfile}")
+                    if "error" in f.read() or (lang == 'gp' and "at top-level" in f.read()):
+                        print(f"::warning file=./{logfile}::Error found in evaluation")
 
                 if test:
                     old_path = Path(test_dir / old_file)
@@ -241,7 +239,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
 
     if test:
         for file in diff_list:
-            print("Found diff between original evaluation in ", file)
+            print("Found diff between current and original evaluation in ", file)
     return 0
 
 
