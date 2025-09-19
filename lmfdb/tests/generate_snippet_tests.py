@@ -145,7 +145,7 @@ def raise_error_warning(logfile, prompt):
         line_end = contents[:match.end()].count("\n")
         if "error" in text.lower() or "***" in text:
             file = str(logfile).removesuffix('.copy')
-            print(f"::warning file={file}, line={line}, endLine={line_end}::{text}")
+            print(f"::warning file={file},line={line},endLine={line_end}::{text}")
 
 
 def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_langs=None):
