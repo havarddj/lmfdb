@@ -6,6 +6,7 @@ import yaml
 import argparse
 import os
 import sys
+import re
 import pexpect
 import pexpect.replwrap # for communicating with processes
 
@@ -133,6 +134,20 @@ def _eval_code_file(data, lang, proc, logfile):
     #     return eval_str
 
 
+def raise_error_warning(logfile, prompt):
+    with logfile.open('r') as f:
+        contents = f.read()
+
+    matches = re.finditer(fr"({prompt}.*?){prompt}", contents, re.DOTALL)
+    for match in matches:
+        text = match.group()
+        line = contents[:match.start()].count("\n") + 1
+        line_end = contents[:match.end()].count("\n")
+        if "error" in text.lower() or "***" in text:
+            file = str(logfile).removesuffix('.copy')
+            print(f"::warning file={file} line={line} endLine={line_end}::{text}")
+
+
 def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_langs=None):
     """
     Create tests for snippet files in yaml_file_path if not None, else for all
@@ -219,9 +234,7 @@ def create_snippet_tests(yaml_file_path=None, ignore_langs=[], test=False, only_
                 print("Writing data to", str(logfile))
                 _eval_code_file(data, lang, processes[lang], logfile)
 
-                with logfile.open('r') as f:
-                    if "error" in f.read() or "at top-level" in f.read():
-                        print(f"::warning file=./{logfile}::Error found in evaluation")
+                raise_error_warning(logfile, prompt_dict[lang])
 
                 if test:
                     old_path = Path(test_dir / old_file)
