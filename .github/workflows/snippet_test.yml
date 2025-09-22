@@ -28,9 +28,9 @@ jobs:
         run: |
           {
           echo 'ERROR_CONTENTS<<EOF'
-          cat snippet_error_file.md
+          cat lmfdb/snippet_error_file.md
           echo EOF
-          } >> "$GITHUB_ENV"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Test error file contents
         env:
