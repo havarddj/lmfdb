@@ -27,11 +27,17 @@ jobs:
         id: read_error_file
         run: |
           {
-          echo "ERROR_CONTENTS<<EOF"
+          echo 'ERROR_CONTENTS<<EOF'
           cat snippet_error_file.md
           echo EOF
           } >> "$GITHUB_ENV"
-          
+
+      - name: Test error file contents
+        if: ${{ hashFiles('**/snippet_error_file.md') }}
+        env:
+          error_contents: ${{ steps.read_error_file.outputs.ERROR_CONTENTS }}
+        run: echo "Printing body: $error_contents"
+        
       - name: Create or update snippet error issue
         if: ${{ hashFiles('**/snippet_error_file.md') }}
         uses: ovsds/create-or-update-unique-issue-action@v1
