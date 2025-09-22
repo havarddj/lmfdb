@@ -141,7 +141,7 @@ def raise_error_warning(logfile, lang, error_file = None):
     prompt = prompt_dict[lang]
     matches = re.finditer(fr"({prompt}.*?)(?={prompt})", contents, flags=re.DOTALL)
     for match in matches:
-        text = match.group()[:-len(prompt)] # remove extra prompt at the end
+        text = match.group()
         line = contents[:match.start()].count("\n") + 1
         line_end = contents[:match.end()].count("\n")
         if "error" in text.lower() or "***" in text:
