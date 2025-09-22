@@ -157,7 +157,7 @@ def raise_error_warning(logfile, lang, error_file = None):
                 with open(error_file, "a") as f:
                     f.write(f"1. In [{str(logfile)}](../blob/main/{str(logfile)}#L{line}), lines {line} to {line_end}:\n\n")
                     f.write(space + f'```{lang}\n')
-                    f.write(space + text.replace('\n', space + '\n')) # indent to get nice markdown
+                    f.write(space + text.replace('\n', '\n' + space)) # indent to get nice markdown
                     f.write('\n' + space + '```\n\n')
                     
 
