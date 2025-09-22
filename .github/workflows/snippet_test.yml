@@ -33,9 +33,10 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Test error file contents
-        run: echo "Printing body: $ERROR_CONTENTS"
         env:
           ERROR_CONTENTS: ${{ steps.read_error_file.outputs.ERROR_CONTENTS }}
+        run: |
+          echo "Printing body: $ERROR_CONTENTS"
         
       - name: Create or update snippet error issue
         if: ${{ hashFiles('**/snippet_error_file.md') }}
