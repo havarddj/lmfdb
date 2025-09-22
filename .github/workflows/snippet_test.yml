@@ -28,7 +28,7 @@ jobs:
         run: |
           {
           echo 'ERROR_CONTENTS<<EOF'
-          cat lmfdb/snippet_error_file.md
+          cat snippet_error_file.md
           echo EOF
           } >> "$GITHUB_OUTPUT"
 
