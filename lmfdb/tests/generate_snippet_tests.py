@@ -66,7 +66,7 @@ def _start_snippet_procs(langs):
     processes = {}
     for lang in langs:
         if lang == 'oscar':
-            print("Loading Oscar, this may take a while:")
+            print("Loading Oscar, this might take a while:")
             spawn = pexpect.spawn(exec_dict['oscar'], ['-q', '--color=no', '--banner=no'],
                                   echo=False, env=os.environ | {'TERM':'dumb'},
                                   encoding="utf8")
