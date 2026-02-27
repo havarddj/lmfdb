@@ -678,7 +678,7 @@ def genus2_curve_search(info, query):
     )
 
 @diagram_wrap(template="d3_diagram.html",
-              table=db.g2c_curves,
+              table=db.g2c_curves_new,
               title="Genus 2 curve diagram search",
               err_title="Genus 2 curve search input error",
               x_axis_default=None,
