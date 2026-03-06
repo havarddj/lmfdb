@@ -360,6 +360,65 @@ Testing
   ```
   it produces beautiful coverage scores in `lmfdb/cover/index.html`
 
+Serving LMFDB from a local database
+-----------------------------------
+
+TODO: 
+- [ ] load entire knowl database
+- [ ] 
+
+For offline use, or to speed up development, it is frequently useful to run the LMFDB server locally. 
+
+### Setting up a local postgres server
+
+Install `postgresql` locally on your computer. For example, on MacOS, this can be done with `brew`:
+
+```bash 
+brew install postgresql
+brew services start postgresql
+```
+Now check that it's running using
+
+```bash
+psql --version
+pg_isready
+```
+
+You might have to add the suffix `-18` to the commands, depending on which version is installed.
+Next we set up a local database:
+
+```bash
+# This creates a database called lmfdb_local_db, owned by your current user
+createdb lmfdb_local_db
+
+# Verify it exists
+psql -l
+
+# Now we create an lmfdb role in psql:
+psql -U $(whoami) lmfdb_local_db
+
+lmfdb_local_db=# CREATE USER lmfdb WITH SUPERUSER PASSWORD 'lmfdb';
+
+#(Here you should only enter the text after #)
+```
+
+Next, create a local configuration file (in the `lmfdb` base directory, i.e. where you find `config.ini`)
+
+```bash
+sage -python -m lmfdb.utils.config --config-file=config_local.ini \
+     --postgresql-host=localhost \
+     --postgresql-dbname="lmfdb_local_db"
+```
+
+
+
+
+
+### Populating the tables
+
+### Pointing start-lmfdb to the local server
+
+
 Pro Tip: Debugging
 -------------------
 
