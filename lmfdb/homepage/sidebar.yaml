@@ -64,12 +64,13 @@
     title: Varieties
     url_for: "varieties"
   parts:
-    - title: "Elliptic Curves >"
+    - title: "Elliptic Curves"
       colspan: onecolumn
+      collapsible: true
       part2:
-        - title: Rational
+        - title: "Elliptic curves over $\\Q$"
           url_for: "ec.rational_elliptic_curves"
-        - title: Number fields
+        - title: "Elliptic curves over $\\Q(\\alpha)$"
           url_for: "ecnf.index"
     - title: Elliptic curves over $\F_{q}(t)$
       status: future

@@ -1682,6 +1682,22 @@ div.maassformplot img {
     padding: 2px 5px;
 }
 
+#sidebar .collapsible-toggle {
+    cursor: pointer;
+    user-select: none;
+}
+#sidebar .collapsible-toggle::after {
+    content: " \25B6";
+    font-size: 0.75em;
+}
+#sidebar .collapsible-toggle.open::after {
+    content: " \25BC";
+}
+#sidebar .collapsible-content {
+    display: none;
+    padding-left: 8px;
+}
+
 #sidebar .future {
     color: {{color.sidebar_text_future}};
     display: inherit;

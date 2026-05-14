@@ -167,9 +167,22 @@
     {%- else -%}
       <td scope="col" width="20%">
     {%- endif -%}
+    {%- if entry.collapsible and entry.part2 -%}
+      <span class="collapsible-toggle">{{entry.url | safe}}</span>
+      <div class="collapsible-content">
+      {%- for pt2 in entry.part2 -%}
+        {%- if not BETA and pt2.status == "notonbeta" -%}
+          <div><span class="subtitle">{{ pt2.url | safe }}</span></div>
+        {%- elif (BETA and pt2.status == 'beta') or not pt2.status -%}
+          <div><span class="subtitle">{{ pt2.url | safe }}</span></div>
+        {%- endif -%}
+      {%- endfor -%}
+      </div></td>
+    {%- else -%}
         {{entry.url | safe}}
     {%- endif -%}
-  {%- if entry.part2 -%}
+  {%- endif -%}
+  {%- if entry.part2 and not entry.collapsible -%}
     <td scope="col" width="40%">
     {%- for pt2 in entry.part2 -%}
       {%- if not BETA and pt2.status == "notonbeta" -%}
@@ -212,4 +225,13 @@
 {%- endif -%} {# user_is_authenticated or not Knowledge #}
 {%- endif -%} {# if (BETA and value.status == 'beta') or not value.status #}
 {%- endfor -%} {# for key, heading, value in sidebar.data #}
+
+<script>
+$(document).ready(function() {
+  $('.collapsible-toggle').click(function() {
+    $(this).toggleClass('open');
+    $(this).next('.collapsible-content').slideToggle(150);
+  });
+});
+</script>
 
