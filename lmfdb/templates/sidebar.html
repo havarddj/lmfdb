@@ -228,8 +228,18 @@
 
 <script>
 $(document).ready(function() {
+  var STORAGE_KEY = 'lmfdb_sidebar_ec_open';
+
+  // Restore state on load
+  if (localStorage.getItem(STORAGE_KEY) === '1') {
+    $('.collapsible-toggle').addClass('open');
+    $('.collapsible-content').show();
+  }
+
   $('.collapsible-toggle').click(function() {
     $(this).toggleClass('open');
+    var isOpen = $(this).hasClass('open');
+    localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
     $(this).next('.collapsible-content').slideToggle(150);
   });
 });
