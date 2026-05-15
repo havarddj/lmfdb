@@ -230,20 +230,50 @@
 
 <script>
 $(document).ready(function() {
-  var STORAGE_KEY = 'lmfdb_sidebar_ec_open';
 
-  // Restore state on load
-  if (localStorage.getItem(STORAGE_KEY) === '1') {
+  // ── Elliptic Curves sub-menu toggle ──────────────────────────────────────
+  var EC_KEY = 'lmfdb_sidebar_ec_open';
+  if (localStorage.getItem(EC_KEY) === '1') {
     $('.collapsible-chevron').addClass('open');
     $('.collapsible-content').show();
   }
-
   $('.collapsible-chevron').click(function() {
     $(this).toggleClass('open');
     var isOpen = $(this).hasClass('open');
-    localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
+    localStorage.setItem(EC_KEY, isOpen ? '1' : '0');
     $(this).closest('.collapsible-container').next('.collapsible-content').slideToggle(150);
   });
+
+  // ── Section (h2) collapse/expand ─────────────────────────────────────────
+  $('#sidebar h2').each(function() {
+    var $h2      = $(this);
+    var $content = $h2.nextUntil('h2');
+    if ($content.length === 0) return; // 'single' type – nothing to collapse
+
+    // Wrap all content between this h2 and the next into one div
+    $content.wrapAll('<div class="section-content"></div>');
+    var $section = $h2.next('.section-content');
+
+    // Append the chevron into the h2
+    var $chev = $('<span class="section-chevron open"></span>');
+    $h2.append($chev);
+
+    // Restore persisted state (default: open)
+    var key = 'lmfdb_sidebar_sec_' + $.trim($h2.text()).replace(/\s+/g, '_').substring(0, 30);
+    if (localStorage.getItem(key) === '0') {
+      $section.hide();
+      $chev.removeClass('open').addClass('closed');
+    }
+
+    $chev.on('click', function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      $chev.toggleClass('open closed');
+      localStorage.setItem(key, $chev.hasClass('open') ? '1' : '0');
+      $section.slideToggle(150);
+    });
+  });
+
 });
 </script>
 

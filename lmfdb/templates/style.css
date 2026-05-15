@@ -485,6 +485,32 @@ body > .debug {
     color: {{ color.sidebar_text_h2 }};
     padding: 5px;
     margin: 0;
+    position: relative;
+}
+#sidebar .section-chevron {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: {{color.col_sidebar_header_links}};
+    padding: 3px;
+    line-height: 1;
+}
+#sidebar .section-chevron::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    vertical-align: 1px;
+    transition: transform 0.15s ease;
+}
+#sidebar .section-chevron.closed::before {
+    transform: rotate(-45deg);
+    vertical-align: 2px;
 }
 
 #sidebar ul:first-child a:first-child,
@@ -523,6 +549,7 @@ body > .debug {
 #sidebar h2 a {
     color: {{color.col_sidebar_header_links}}; /* sets sidebar header links*/
     padding: 5px;
+    padding-right: 20px; /* leave room for section chevron */
 }
 #sidebar h2 a:hover {
     background: {{ color.sidebar_background_h2_hover }};
