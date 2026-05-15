@@ -1687,12 +1687,21 @@ div.maassformplot img {
     user-select: none;
     color: {{color.col_sidebar_header_links}};
 }
-#sidebar .collapsible-toggle::after {
-    content: " \25B6";
-    font-size: 0.75em;
+#sidebar .collapsible-toggle::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(-45deg);
+    margin-right: 5px;
+    vertical-align: 2px;
+    transition: transform 0.15s ease, vertical-align 0.15s ease;
 }
-#sidebar .collapsible-toggle.open::after {
-    content: " \25BC";
+#sidebar .collapsible-toggle.open::before {
+    transform: rotate(45deg);
+    vertical-align: 0px;
 }
 #sidebar .collapsible-content {
     display: none;
