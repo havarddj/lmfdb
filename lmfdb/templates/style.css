@@ -1686,6 +1686,7 @@ div.maassformplot img {
     cursor: pointer;
     user-select: none;
     color: {{color.col_sidebar_header_links}};
+    font-weight: bold;
 }
 #sidebar .collapsible-toggle::before {
     content: '';
