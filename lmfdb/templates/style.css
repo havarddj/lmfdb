@@ -1733,7 +1733,7 @@ div.maassformplot img {
     color: {{color.col_sidebar_header_links}};
     flex-shrink: 0;
     padding-left: 6px;
-    padding-right: 6px;
+    padding-right: 4px;
 }
 #sidebar .collapsible-chevron::before {
     content: '';
