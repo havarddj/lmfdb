@@ -444,6 +444,22 @@ body > .debug {
   background: {{color.sidebar_background}};
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: {{color.col_sidebar_header_links}} transparent;
+}
+#sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+#sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+#sidebar::-webkit-scrollbar-thumb {
+  background: {{color.col_sidebar_header_links}};
+  border-radius: 2px;
 }
 #sidebar .list li {
   padding: 5px;
