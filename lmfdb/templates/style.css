@@ -1685,6 +1685,7 @@ div.maassformplot img {
 #sidebar .collapsible-toggle {
     cursor: pointer;
     user-select: none;
+    color: {{color.col_sidebar_header_links}};
 }
 #sidebar .collapsible-toggle::after {
     content: " \25B6";
