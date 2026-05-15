@@ -168,7 +168,9 @@
       <td scope="col" width="20%">
     {%- endif -%}
     {%- if entry.collapsible and entry.part2 -%}
-      <span class="collapsible-toggle">{{entry.url | safe}}</span>
+      <span class="collapsible-container">
+        {{entry.url | safe}}<span class="collapsible-chevron"></span>
+      </span>
       <div class="collapsible-content">
       {%- for pt2 in entry.part2 -%}
         {%- if not BETA and pt2.status == "notonbeta" -%}
@@ -232,15 +234,15 @@ $(document).ready(function() {
 
   // Restore state on load
   if (localStorage.getItem(STORAGE_KEY) === '1') {
-    $('.collapsible-toggle').addClass('open');
+    $('.collapsible-chevron').addClass('open');
     $('.collapsible-content').show();
   }
 
-  $('.collapsible-toggle').click(function() {
+  $('.collapsible-chevron').click(function() {
     $(this).toggleClass('open');
     var isOpen = $(this).hasClass('open');
     localStorage.setItem(STORAGE_KEY, isOpen ? '1' : '0');
-    $(this).next('.collapsible-content').slideToggle(150);
+    $(this).closest('.collapsible-container').next('.collapsible-content').slideToggle(150);
   });
 });
 </script>

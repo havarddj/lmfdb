@@ -1682,13 +1682,23 @@ div.maassformplot img {
     padding: 2px 5px;
 }
 
-#sidebar .collapsible-toggle {
-    cursor: pointer;
-    user-select: none;
-    color: {{color.col_sidebar_header_links}};
-    font-weight: bold;
+#sidebar .collapsible-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
-#sidebar .collapsible-toggle::before {
+#sidebar .collapsible-container > a {
+    font-weight: bold;
+    color: {{color.col_sidebar_header_links}};
+}
+#sidebar .collapsible-chevron {
+    cursor: pointer;
+    color: {{color.col_sidebar_header_links}};
+    flex-shrink: 0;
+    padding-left: 6px;
+}
+#sidebar .collapsible-chevron::before {
     content: '';
     display: inline-block;
     width: 5px;
@@ -1696,11 +1706,10 @@ div.maassformplot img {
     border-right: 2px solid currentColor;
     border-bottom: 2px solid currentColor;
     transform: rotate(-45deg);
-    margin-right: 5px;
     vertical-align: 2px;
-    transition: transform 0.15s ease, vertical-align 0.15s ease;
+    transition: transform 0.15s ease;
 }
-#sidebar .collapsible-toggle.open::before {
+#sidebar .collapsible-chevron.open::before {
     transform: rotate(45deg);
     vertical-align: 0px;
 }
