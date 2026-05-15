@@ -484,18 +484,16 @@ body > .debug {
     font-size: 100%;
     background-color: {{ color.sidebar_background_h2 }};/*sidebar tabs*/
     color: {{ color.sidebar_text_h2 }};
-    padding: 5px;
+    padding: 0;
     margin: 0;
-    position: relative;
+    display: flex;
+    align-items: center;
 }
 #sidebar .section-chevron {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
+    flex-shrink: 0;
     cursor: pointer;
     color: {{color.col_sidebar_header_links}};
-    padding: 3px;
+    padding: 5px 8px 5px 4px;
     line-height: 1;
 }
 #sidebar .section-chevron::before {
@@ -550,7 +548,8 @@ body > .debug {
 #sidebar h2 a {
     color: {{color.col_sidebar_header_links}}; /* sets sidebar header links*/
     padding: 5px;
-    padding-right: 20px; /* leave room for section chevron */
+    flex: 1;
+    min-width: 0;
 }
 #sidebar h2 a:hover {
     background: {{ color.sidebar_background_h2_hover }};
