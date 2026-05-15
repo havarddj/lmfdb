@@ -255,7 +255,7 @@ $(document).ready(function() {
   // ── Section (h2) collapse/expand ─────────────────────────────────────────
   $('#sidebar h2').each(function() {
     var $h2      = $(this);
-    var $content = $h2.nextUntil('h2');
+    var $content = $h2.nextUntil('h2').not('script');
     if ($content.length === 0) return; // 'single' type – nothing to collapse
 
     // Wrap all content between this h2 and the next into one div
