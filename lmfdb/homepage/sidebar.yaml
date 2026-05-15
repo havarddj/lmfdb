@@ -205,6 +205,19 @@
   - title: Abstract groups
     url_for: "abstract.index"
     colspan: onecolumn
+    collapsible: true
+    part2:
+      - title: "groups"
+        url_for: "abstract.index"
+      - title: "subgroups"
+        url_for: "abstract.index"
+        url_args: {search_type: "Subgroups"}
+      - title: "character tables"
+        url_for: "abstract.index"
+        url_args: {search_type: "ComplexCharacters"}
+      - title: "conjugacy classes"
+        url_for: "abstract.index"
+        url_args: {search_type: "ConjugacyClasses"}
   - title: Lattices
     url_for: "lattice.lattice_render_webpage"
     status: beta

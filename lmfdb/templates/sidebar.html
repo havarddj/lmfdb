@@ -231,17 +231,25 @@
 <script>
 $(document).ready(function() {
 
-  // ── Elliptic Curves sub-menu toggle ──────────────────────────────────────
-  var EC_KEY = 'lmfdb_sidebar_ec_open';
-  if (localStorage.getItem(EC_KEY) === '1') {
-    $('.collapsible-chevron').addClass('open');
-    $('.collapsible-content').show();
-  }
-  $('.collapsible-chevron').click(function() {
-    $(this).toggleClass('open');
-    var isOpen = $(this).hasClass('open');
-    localStorage.setItem(EC_KEY, isOpen ? '1' : '0');
-    $(this).closest('.collapsible-container').next('.collapsible-content').slideToggle(150);
+  // ── Collapsible sub-menu toggles (Elliptic Curves, Abstract groups, …) ───
+  $('.collapsible-container').each(function() {
+    var $container = $(this);
+    var $chevron   = $container.find('.collapsible-chevron');
+    var $content   = $container.next('.collapsible-content');
+    var key = 'lmfdb_sidebar_entry_' +
+              $.trim($container.text()).replace(/\s+/g, '_').substring(0, 30);
+
+    if (localStorage.getItem(key) === '1') {
+      $chevron.addClass('open');
+      $content.show();
+    }
+
+    $chevron.click(function() {
+      $chevron.toggleClass('open');
+      var isOpen = $chevron.hasClass('open');
+      localStorage.setItem(key, isOpen ? '1' : '0');
+      $content.slideToggle(150);
+    });
   });
 
   // ── Section (h2) collapse/expand ─────────────────────────────────────────
