@@ -778,15 +778,59 @@ def index():
         info["search_type"] = search_type = info.get(
             "search_type", info.get("hst", "")
         )
+        # If only search_type is given (no actual search params), show the landing page
+        only_search_type = set(request.args.keys()) <= {"search_type", "hst"}
         if search_type in ["List", "", "Random", "Diagram"]:
             return group_search(info)
         elif search_type in ["Subgroups", "RandomSubgroup"]:
+            if only_search_type and search_type == "Subgroups":
+                info["search_array"] = SubgroupSearchArray()
+                info["ambient_order_list"] = ["1-64", "65-127", "128", "129-255", "256", "257-383", "384", "385-511", "513-1000", "1001-1500", "1501-2000", "2001-"]
+                info["subgroup_order_list"] = ["1-16", "17-32", "33-64", "65-128", "129-256", "257-512", "513-1000", "1001-"]
+                info["prop_browse_list"] = [
+                    ("normal=yes", "normal"),
+                    ("normal=no", "non-normal"),
+                    ("abelian=yes", "abelian"),
+                    ("cyclic=yes", "cyclic"),
+                    ("maximal=yes", "maximal"),
+                    ("central=yes", "central"),
+                    ("perfect=yes", "perfect"),
+                    ("characteristic=yes", "characteristic"),
+                ]
+                return render_template(
+                    "abstract-subgroup.html",
+                    title="Subgroups of abstract groups",
+                    bread=get_bread([("Subgroups", " ")]),
+                    info=info,
+                    learnmore=learnmore_list(),
+                )
             info["search_array"] = SubgroupSearchArray()
             return subgroup_search(info)
         elif search_type in ["ComplexCharacters", "RandomComplexCharacter"]:
+            if only_search_type and search_type == "ComplexCharacters":
+                info["search_array"] = ComplexCharSearchArray()
+                info["degree_list"] = ["1", "2", "3", "4", "5", "6", "7", "8", "9-16", "17-"]
+                return render_template(
+                    "abstract-characters.html",
+                    title="Complex characters of abstract groups",
+                    bread=get_bread([("Characters", " ")]),
+                    info=info,
+                    learnmore=learnmore_list(),
+                )
             info["search_array"] = ComplexCharSearchArray()
             return complex_char_search(info)
         elif search_type in ["ConjugacyClasses"]:  # no random since lots of groups with cc don't have characters also computed
+            if only_search_type:
+                info["search_array"] = ConjugacyClassSearchArray()
+                info["order_list"] = ["1", "2", "3", "4", "5", "6", "7", "8", "9-16", "17-32", "33-"]
+                info["size_list"] = ["1", "2", "3", "4", "5", "6-10", "11-20", "21-50", "51-"]
+                return render_template(
+                    "abstract-cc.html",
+                    title="Conjugacy classes of abstract groups",
+                    bread=get_bread([("Conjugacy classes", " ")]),
+                    info=info,
+                    learnmore=learnmore_list(),
+                )
             info["search_array"] = ConjugacyClassSearchArray()
             return conjugacy_class_search(info)
 
