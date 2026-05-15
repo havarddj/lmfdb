@@ -449,10 +449,11 @@ body > .debug {
   max-height: 100vh;
   overflow-y: auto;
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
   scrollbar-color: {{color.col_sidebar_header_links}} transparent;
 }
 #sidebar::-webkit-scrollbar {
-  width: 4px;
+  width: 2px;
 }
 #sidebar::-webkit-scrollbar-track {
   background: transparent;
@@ -1733,8 +1734,11 @@ div.maassformplot img {
 }
 #sidebar .collapsible-container > a {
     color: {{color.col_sidebar_header_links}};
+    flex: 1;
+    min-width: 0;
 }
 #sidebar .collapsible-chevron {
+    display: inline-block;
     cursor: pointer;
     color: {{color.col_sidebar_header_links}};
     flex-shrink: 0;
