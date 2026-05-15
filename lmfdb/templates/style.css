@@ -1689,7 +1689,6 @@ div.maassformplot img {
     width: 100%;
 }
 #sidebar .collapsible-container > a {
-    font-weight: bold;
     color: {{color.col_sidebar_header_links}};
 }
 #sidebar .collapsible-chevron {
@@ -1715,7 +1714,17 @@ div.maassformplot img {
 }
 #sidebar .collapsible-content {
     display: none;
-    padding-left: 8px;
+    border-left: 2px solid {{color.col_sidebar_header_links}};
+    margin-left: 2px;
+    margin-top: 2px;
+    padding-left: 6px;
+}
+#sidebar .collapsible-content div {
+    padding: 0;
+}
+#sidebar .collapsible-content .subtitle a {
+    display: block;
+    padding: 2px;
 }
 
 #sidebar .future {
