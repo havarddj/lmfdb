@@ -71,7 +71,7 @@
       part2:
         - title: "over $\\Q$"
           url_for: "ec.rational_elliptic_curves"
-        - title: "over higher degree fields"
+        - title: "over $\\Q(\\alpha)$"
           url_for: "ecnf.index"
     - title: Elliptic curves over $\F_{q}(t)$
       status: future
@@ -212,7 +212,7 @@
       - title: "subgroups"
         url_for: "abstract.index"
         url_args: {search_type: "Subgroups"}
-      - title: "character tables"
+      - title: "characters"
         url_for: "abstract.index"
         url_args: {search_type: "ComplexCharacters"}
       - title: "conjugacy classes"
