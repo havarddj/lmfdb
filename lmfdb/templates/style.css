@@ -1741,7 +1741,6 @@ div.maassformplot img {
     width: 100%;
 }
 #sidebar .collapsible-container > a {
-    color: {{color.col_sidebar_header_links}};
     flex: 1;
     min-width: 0;
 }
@@ -1751,6 +1750,7 @@ div.maassformplot img {
     color: {{color.col_sidebar_header_links}};
     flex-shrink: 0;
     padding-left: 6px;
+    padding-right: 6px;
 }
 #sidebar .collapsible-chevron::before {
     content: '';
