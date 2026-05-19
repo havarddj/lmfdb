@@ -804,6 +804,11 @@ def index():
                     bread=get_bread([("Subgroups", " ")]),
                     info=info,
                     learnmore=learnmore_list(),
+                    related_sections=[
+                        ("Groups", url_for(".index")),
+                        ("Characters", url_for(".index", search_type="ComplexCharacters")),
+                        ("Conjugacy classes", url_for(".index", search_type="ConjugacyClasses")),
+                    ],
                 )
             info["search_array"] = SubgroupSearchArray()
             return subgroup_search(info)
@@ -818,6 +823,11 @@ def index():
                     bread=get_bread([("Characters", " ")]),
                     info=info,
                     learnmore=learnmore_list(),
+                    related_sections=[
+                        ("Groups", url_for(".index")),
+                        ("Subgroups", url_for(".index", search_type="Subgroups")),
+                        ("Conjugacy classes", url_for(".index", search_type="ConjugacyClasses")),
+                    ],
                 )
             info["search_array"] = ComplexCharSearchArray()
             return complex_char_search(info)
@@ -833,6 +843,11 @@ def index():
                     bread=get_bread([("Conjugacy classes", " ")]),
                     info=info,
                     learnmore=learnmore_list(),
+                    related_sections=[
+                        ("Groups", url_for(".index")),
+                        ("Subgroups", url_for(".index", search_type="Subgroups")),
+                        ("Characters", url_for(".index", search_type="ComplexCharacters")),
+                    ],
                 )
             info["search_array"] = ConjugacyClassSearchArray()
             return conjugacy_class_search(info)
@@ -859,6 +874,11 @@ def index():
         bread=bread,
         info=info,
         learnmore=learnmore_list(),
+        related_sections=[
+            ("Subgroups", url_for(".index", search_type="Subgroups")),
+            ("Characters", url_for(".index", search_type="ComplexCharacters")),
+            ("Conjugacy classes", url_for(".index", search_type="ConjugacyClasses")),
+        ],
     )
 
 
