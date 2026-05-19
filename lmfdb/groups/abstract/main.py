@@ -797,6 +797,7 @@ def index():
                     ("perfect=yes", "perfect"),
                     ("characteristic=yes", "characteristic"),
                 ]
+                info["stats"] = GroupStats()
                 return render_template(
                     "abstract-subgroup.html",
                     title="Subgroups of abstract groups",
@@ -810,6 +811,7 @@ def index():
             if only_search_type and search_type == "ComplexCharacters":
                 info["search_array"] = ComplexCharSearchArray()
                 info["degree_list"] = ["1", "2", "3", "4", "5", "6", "7", "8", "9-16", "17-"]
+                info["stats"] = GroupStats()
                 return render_template(
                     "abstract-characters.html",
                     title="Complex characters of abstract groups",
@@ -824,6 +826,7 @@ def index():
                 info["search_array"] = ConjugacyClassSearchArray()
                 info["order_list"] = ["1", "2", "3", "4", "5", "6", "7", "8", "9-16", "17-32", "33-"]
                 info["size_list"] = ["1", "2", "3", "4", "5", "6-10", "11-20", "21-50", "51-"]
+                info["stats"] = GroupStats()
                 return render_template(
                     "abstract-cc.html",
                     title="Conjugacy classes of abstract groups",
@@ -890,6 +893,7 @@ def dynamic_statistics():
 def random_abstract_group():
     label = db.gps_groups.random(projection="label")
     return url_for(".by_label", label=label)
+
 
 
 @abstract_page.route("/interesting")
@@ -1025,6 +1029,16 @@ def by_subgroup_label(label):
     else:
         flash_error("The label %s is invalid.", label)
         return redirect(url_for(".index"))
+
+
+
+#JP added
+@abstract_page.route("/sub/random")
+@redirect_no_cache
+def random_abstract_subgroup():
+    label = db.gps_subgroup_search.random(projection="label")
+    return url_for(".by_subgroup_label", label=label)
+
 
 
 @abstract_page.route("/char_table/<label>")
@@ -3130,6 +3144,10 @@ class SubgroupSearchArray(SearchArray):
     sorts = [("", "ambient order", ['ambient_order', 'ambient_counter', 'quotient_order', 'counter']),
              ("sub_ord", "subgroup order", ['subgroup_order', 'ambient_order', 'ambient_counter', 'counter']),
              ("sub_ind", "subgroup index", ['quotient_order', 'ambient_order', 'ambient_counter', 'counter'])]
+    jump_example = "8.3"
+    jump_egspan = "e.g. 8.3, GL(2,3), 8T34, C3:C4, C2*A5, C16.D4, 6#1, or 12.4.2.b1.a1"
+    jump_prompt = "Label or name"
+    jump_knowl = "group.find_input"
 
     def __init__(self):
         abelian = YesNoBox(name="abelian", label="Abelian", knowl="group.abelian")
@@ -3212,6 +3230,24 @@ class SubgroupSearchArray(SearchArray):
             example="128",
         )
         nontrivproper = YesNoBox(name="nontrivproper", label=display_knowl('group.trivial_subgroup', 'Non-trivial') + " " + display_knowl('group.proper_subgroup', 'proper'))
+
+
+        self.browse_array = [
+			[subgroup, subgroup_order],
+			[ambient,ambient_order],
+			[quotient, quotient_order],
+			[cyclic,abelian],
+			[normal,solvable],
+			[characteristic,perfect],
+			[maximal,central],
+			[direct, split],
+			[quotient_cyclic, quotient_abelian],
+			[quotient_solvable,minimal_normal],
+			[nontrivproper],
+			[hall, sylow]
+		]
+
+
 
         self.refine_array = [
             [subgroup, subgroup_order, cyclic, abelian, solvable],
@@ -3297,17 +3333,19 @@ class ComplexCharSearchArray(SearchArray):
             example="4",
             example_span="4, or a range line 3..5",
         )
-        #nt = TextBox(
-        #    name="nt",
-        #    label="Minimum Perm. Rep.",
-        #    knowl="group.representation.min_perm_rep",
-        #    example="[4,2]",
-        #)
+
+        self.browse_array = [
+			[group, dim],
+			[image_isoclass,conductor],
+			[indicator, faithful],
+			[image_order, kernel_order],
+			[center_order,center_index]
+		]
 
         self.refine_array = [
             [dim, indicator, faithful,conductor],
             [group, image_isoclass, image_order, kernel_order],
-            [center_order, center_index] #, nt]
+            [center_order, center_index]
 
         ]
 
@@ -3344,6 +3382,11 @@ class ConjugacyClassSearchArray(SearchArray):
             example="4",
             example_span="4, or a range like 3..5"
         )
+
+        self.browse_array = [
+			[group, order],
+			[size]
+		]
 
         self.refine_array = [
             [group, order, size]
