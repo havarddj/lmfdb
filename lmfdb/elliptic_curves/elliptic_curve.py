@@ -123,6 +123,10 @@ def rational_elliptic_curves(err_args=None):
                            title=t,
                            bread=get_bread(),
                            learnmore=learnmore_list(),
+                           related_sections=[
+                               (r'Elliptic curves over $\Q(\alpha)$', url_for("ecnf.index")),
+                               ('Classical modular forms', url_for("cmf.index")),
+                           ],
                            calling_function="ec.rational_elliptic_curves",
                            **err_args)
 
