@@ -250,6 +250,14 @@ $(document).ready(function() {
       localStorage.setItem(key, isOpen ? '1' : '0');
       $content.slideToggle(150);
     });
+
+    $container.find('a').first().click(function() {
+      if (!$chevron.hasClass('open')) {
+        $chevron.addClass('open');
+        localStorage.setItem(key, '1');
+        $content.slideDown(150);
+      }
+    });
   });
 
   // ── Section (h2) collapse/expand ─────────────────────────────────────────
