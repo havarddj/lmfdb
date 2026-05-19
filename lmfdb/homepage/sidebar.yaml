@@ -64,7 +64,7 @@
     title: Varieties
     url_for: "varieties"
   parts:
-    - title: "Elliptic Curves"
+    - title: "Elliptic curves"
       colspan: onecolumn
       collapsible: true
       url_for: "ec.rational_elliptic_curves"
@@ -76,7 +76,7 @@
     - title: Elliptic curves over $\F_{q}(t)$
       status: future
       colspan: onecolumn
-    - title: Genus 2 curves over $\Q$
+    - title: Genus 2 curves
       url_for: "g2c.index_Q"
       colspan: onecolumn
     - title: Genus 2 curves over $\Q(\alpha)$
@@ -176,7 +176,7 @@
     title: Motives
     url_for: "motives"
   parts:
-    - title: Hypergeometric over $\Q$
+    - title: Hypergeometric
       status: beta
       url_for:  "hypergm.index"
       colspan: onecolumn

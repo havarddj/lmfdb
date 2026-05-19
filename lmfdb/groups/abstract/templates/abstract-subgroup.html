@@ -2,6 +2,12 @@
 
 {% block content %}
 
+<div>
+  {{ info.stats.subgroup_summary | safe }}
+</div>
+
+
+
 <h2>Browse</h2>
 
 <p>
@@ -21,13 +27,22 @@
     <a href="?search_type=Subgroups&amp;{{searchstr}}">{{display}}</a>&nbsp;
   {% endfor %}
 </p>
-<p>Or search all <a href="{{url_for('.index')}}">abstract groups</a></p>
+<p>A <a href="{{url_for('.random_abstract_subgroup')}}">random subgroup</a>, or search all <a href="{{url_for('.index')}}">abstract groups</a></p>
 
-<h2 id='search_h2'> Search <button id="advancedtoggle" href="#">Advanced search options</button></h2>
+<h2 id='search_h2'> Search </h2>
 
 <form class="re-search" name="search" method="get" action={{url_for('.index')}}>
   <input type="hidden" name="search_type" value="Subgroups">
   {{ info.search_array.html() | safe }}
 </form>
+
+
+<h2> Find </h2>
+
+
+<form name="search" method = "get" action="{{url_for('.index')}}">
+  {{ info.search_array.jump_box(info) | safe }}
+</form>
+
 
 {% endblock %}
