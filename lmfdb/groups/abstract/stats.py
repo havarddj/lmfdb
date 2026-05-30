@@ -226,11 +226,10 @@ class GroupStats(StatsDisplay):
 
     @lazy_attribute
     def char_summary(self):
-        return fr'The database currently contains {comma(db.gps_char.count())} {display_knowl("group.representation.character", "irreducible complex characters")} from among {comma(db.gps_groups.count())} different  {display_knowl("group", "groups")}. You can <a href="{url_for(".statistics")}">browse further statistics</a>.'
+        return fr'The database currently contains {comma(db.gps_char.count())} {display_knowl("group.representation.character", "irreducible complex characters")} from among {comma(db.gps_groups.count({"complex_characters_known":True}))} different  {display_knowl("group", "groups")}. You can <a href="{url_for(".statistics")}">browse further statistics</a>.'
 
 
     @lazy_attribute
     def cc_summary(self):
-        return fr'The database currently contains {comma(db.gps_conj_classes.count())} {display_knowl("group.conjugacy_class", "conjugacy classes")} from among {comma(db.gps_groups.count())} different  {display_knowl("group", "groups")}. You can <a href=\
-"{url_for(".statistics")}">browse further statistics</a>.'
+        return fr'The database currently contains {comma(db.gps_conj_classes.count())} {display_knowl("group.conjugacy_class", "conjugacy classes")} from among {comma(db.gps_groups.count({"conjugacy_classes_known":True}))}  different  {display_knowl("group", "groups")}. You can <a href="{url_for(".statistics")}">browse further statistics</a>.'
 
