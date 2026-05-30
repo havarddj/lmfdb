@@ -26,7 +26,6 @@
 <p>
   <a href="?search_type=ComplexCharacters&amp;faithful=yes">Faithful</a> characters&nbsp;
 </p>
-<p>Or search all <a href="{{url_for('.index')}}">abstract groups</a></p>
 
 <h2 id='search_h2'> Search </h2>
 
@@ -40,7 +39,8 @@
 <h2> Find </h2>
 
 
-<form name="search" method = "get" action="{{url_for('.index')}}">
+<form name="search" method="get" action="{{url_for('.index')}}">
+  <input type="hidden" name="search_type" value="ComplexCharacters">
   {{ info.search_array.jump_box(info) | safe }}
 </form>
 

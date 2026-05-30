@@ -1051,8 +1051,6 @@ def by_subgroup_label(label):
         return redirect(url_for(".index"))
 
 
-
-#JP added
 @abstract_page.route("/sub/random")
 @redirect_no_cache
 def random_abstract_subgroup():
@@ -1062,7 +1060,7 @@ def random_abstract_subgroup():
 
 
 @abstract_page.route("/char_table/<label>")
-def char_table(label):
+def char_table(label, from_jump=False):
     label = clean_input(label)
     info = to_dict(request.args,
                    dispv=sparse_cyclotomic_to_mathml)
@@ -1267,6 +1265,42 @@ def group_jump(info):
                 return redirect(url_for(".index"))
     flash_error("%s is not a valid name for a group or subgroup; see %s for a list of possible families" % (jump, display_knowl('group.families', 'here')))
     return redirect(url_for(".index"))
+
+
+def char_jump(info):
+    jump = info["jump"]
+    # by label
+    if abstract_group_label_regex.fullmatch(jump):
+        return redirect(url_for(".char_table", label=jump))
+    #transitive group
+    from lmfdb.galois_groups.transitive_group import Tfinder
+    if Tfinder.fullmatch(jump):
+        label = db.gps_transitive.lookup(jump, "abstract_label")
+        if label is None:
+            flash_error(f"Transitive group {jump} is not in the database")
+            return redirect(url_for(".index", search_type="ComplexCharacters"))
+        return redirect(url_for(".char_table", label=label))
+    flash_error(f"Group {jump} is not in the database")
+    return redirect(url_for(".index", search_type="ComplexCharacters"))
+
+
+def cc_jump(info):
+    jump = info["jump"]
+    # by label
+    if abstract_group_label_regex.fullmatch(jump):
+        return redirect(url_for('.index', group=jump, search_type="ConjugacyClasses"))
+    #transitive group
+    from lmfdb.galois_groups.transitive_group import Tfinder
+    if Tfinder.fullmatch(jump):
+        label = db.gps_transitive.lookup(jump, "abstract_label")
+        if label is None:
+            flash_error(f"Transitive group {jump} is not in the database")
+            return redirect(url_for('.index', search_type="ConjugacyClasses"))
+        return redirect(url_for(".index", group=label, search_type="ConjugacyClasses"))
+    flash_error(f"Group {jump} is not in the database")
+    return redirect(url_for(".index", search_type="ConjugacyClasses"))
+
+
 
 def show_factor(n):
     if n is None or n == "":
@@ -1720,7 +1754,7 @@ class Complex_char_download(Downloader):
     title="Complex character search results",
     err_title="Complex character search input error",
     columns=complex_char_columns,
-    shortcuts={"download": Complex_char_download()},
+    shortcuts={"jump": char_jump, "download": Complex_char_download()},
     bread=lambda: get_bread([("Search Results", "")]),
     postprocess=char_postprocess,
     learnmore=learnmore_list,
@@ -1872,7 +1906,7 @@ class Conjugacy_class_download(Downloader):
     title="Conjugacy class search results",
     err_title="Conjugacy class search input error",
     columns=conjugacy_class_columns,
-    shortcuts={"download": Conjugacy_class_download()},
+    shortcuts={"jump": cc_jump, "download": Conjugacy_class_download()},
     bread=lambda: get_bread([("Search Results", "")]),
     postprocess=cc_postprocess,
     learnmore=learnmore_list,
@@ -3291,6 +3325,10 @@ class SubgroupSearchArray(SearchArray):
 class ComplexCharSearchArray(SearchArray):
     sorts = [("", "group", ['group_order', 'group_counter', 'dim', 'label']),
              ("dim", "degree", ['dim', 'group_order', 'group_counter', 'label'])]
+    jump_example = "8.3"
+    jump_egspan = "Enter a group label to go to the character table for that group."
+    jump_prompt	= "Group label"
+    jump_knowl = "group.label"
 
     def __init__(self):
         faithful = YesNoBox(name="faithful", label="Faithful", knowl="group.representation.faithful")
@@ -3380,6 +3418,10 @@ class ConjugacyClassSearchArray(SearchArray):
         ("order", "order", ['order', 'group_order', 'group_counter','size']),
         ("size", "size", ['size', 'order', 'group_order', 'group_counter']),
     ]
+    jump_example = "8.3"
+    jump_egspan = "e.g. 8.3 or 12T4"
+    jump_prompt = "Group label"
+    jump_knowl = "group.label"
 
     def __init__(self):
         group = TextBox(
