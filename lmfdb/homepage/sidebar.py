@@ -7,20 +7,25 @@ def linked_name(item, level=""):
     """ take the dictionary describing a TOC entry and return the
     title wrapped in an appropriate href link.
     """
-    if level == "heading":
-        return ''.join(['<h2>',item['title'],'</h2>\n'])
+    if 'url_for' in item and not ('status' in item and item['status'] == 'future'):
+        url = url_for(item['url_for'],**item.get('url_args',{}))
+        this_entry = ''.join(['<a href="',url,'">',item['title'],'</a>'])
     else:
-        if 'url_for' in item and not ('status' in item and item['status'] == 'future'):
-            url = url_for(item['url_for'],**item.get('url_args',{}))
-            this_entry = ''.join(['<a href="',url,'">',item['title'],'</a>'])
-        else:
-            this_entry = item['title']
-        if this_entry == 'dummy':
-            this_entry = '&nbsp;'
-        if 'status' in item and item['status'] == 'future':
-            this_entry = ''.join(['<div class="future">',this_entry,'</div>'])
+        this_entry = item['title']
+
+    if this_entry == 'dummy':
+        this_entry = '&nbsp;'
+
+    if 'status' in item and item['status'] == 'future':
+        this_entry = ''.join(['<div class="future">',this_entry,'</div>'])
+
     if 'status' in item and item['status'] == 'beta':
         this_entry = ''.join(['<div class="beta">', this_entry, '</div>'])
+
+    # headings should be wrapped in h2's:
+    if level == "heading":
+        this_entry =  ''.join(['<h2>', this_entry,'</h2>\n'])
+
     return this_entry
 
 # The unique instance of the class SideBar:
