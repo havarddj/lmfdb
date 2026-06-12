@@ -475,33 +475,13 @@ body > .debug {
     font-family: sans-serif;
     font-size: 100%;
     background-color: {{ color.sidebar_background_h2 }};/*sidebar tabs*/
-    color: {{ color.sidebar_text_h2 }};
-    padding: 0;
-    margin: 0;
+    color: {{ color.col_sidebar_header_links }};
+
+    padding: 5px;
+    min-width: 0;
+
     display: flex;
     align-items: center;
-}
-#sidebar .section-chevron {
-    flex-shrink: 0;
-    cursor: pointer;
-    color: {{color.col_sidebar_header_links}};
-    padding: 5px 8px 5px 4px;
-    line-height: 1;
-}
-#sidebar .section-chevron::before {
-    content: '';
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(45deg);
-    vertical-align: 1px;
-    transition: transform 0.15s ease;
-}
-#sidebar .section-chevron.closed::before {
-    transform: rotate(-45deg);
-    vertical-align: 2px;
 }
 
 #sidebar ul:first-child a:first-child,
@@ -1719,47 +1699,61 @@ div.maassformplot img {
 
 #sidebar .collapsible-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    cursor: pointer;
+    min-width: 100%;
+    padding-left: 2pt;
+    color: {{color.col_sidebar_header_links}}
 }
-#sidebar .collapsible-container > a {
-    flex: 1;
-    min-width: 0;
-}
+
 #sidebar .collapsible-chevron {
-    display: inline-block;
+    flex-shrink: 0;
     cursor: pointer;
     color: {{color.col_sidebar_header_links}};
-    flex-shrink: 0;
-    padding-left: 6px;
-    padding-right: 4px;
+    /* padding: 5px 8px 5px 4px; */
+    /* line-height: 1; */
+    margin-right: 4px;
+    margin-left: auto;
+    align-items: right;
+    /* flex-shrink: 0; */
+    /* padding-left: 50%; */
+    /* padding-right: 4px; */
 }
-#sidebar .collapsible-chevron::before {
-    content: '';
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(-45deg);
-    vertical-align: 2px;
+
+/* #sidebar .section-chevron { */
+/* } */
+
+#sidebar .collapsible-chevron > svg {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    transform: rotate(0deg);
     transition: transform 0.15s ease;
+    /* padding: 5px 8px 5px 4px; */
+    /* line-height: 1; */
 }
-#sidebar .collapsible-chevron.open::before {
-    transform: rotate(45deg);
-    vertical-align: 0px;
+
+#sidebar .collapsible-chevron.open > svg {
+    transform: rotate(90deg);
+    /* vertical-align: 2px; */
 }
+
+
 #sidebar .collapsible-content {
-    display: none;
+    flex-basis: 100%;
     border-left: 2px solid {{color.col_sidebar_header_links}};
     margin-left: 2px;
     margin-top: 2px;
     padding-left: 6px;
 }
+
 #sidebar .collapsible-content div {
     padding: 0;
 }
+
 #sidebar .collapsible-content .subtitle a {
     display: block;
     padding: 2px;
@@ -1858,7 +1852,7 @@ body.beta #sidebar table.short:nth-of-type(3) .rotation p.rotation {
 #sidebar h2:first-child a:first-child,
 #sidebar h2:first-child {
   margin: 0;
-  padding-top: 3px;
+  /* padding-top: 3px; */
 }
 
 #sidebar ul:last-child li:last-child,

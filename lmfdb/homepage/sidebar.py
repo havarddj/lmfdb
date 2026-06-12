@@ -8,12 +8,7 @@ def linked_name(item, level=""):
     title wrapped in an appropriate href link.
     """
     if level == "heading":
-        if 'url_for' in item:
-            url = url_for(item['url_for'],**item.get('url_args',{}))
-            return ''.join(['<h2 class="link"><a href="',url,'">',item['title'],'</a></h2>\n'])
-        else:
-            return ''.join(['<h2>',item['title'],'</h2>\n'])
-
+        return ''.join(['<h2>',item['title'],'</h2>\n'])
     else:
         if 'url_for' in item and not ('status' in item and item['status'] == 'future'):
             url = url_for(item['url_for'],**item.get('url_args',{}))
@@ -56,22 +51,7 @@ class SideBar():
         self.data = [(k,heading(k),self.toc_dic[k]) for k in self.main_headings]
 
         for _, _, data in self.data:
-            if data['type'] == 'L':
-                for item in data['firstpart']['entries']:
-                    item['url'] = linked_name(item)
-                for item in data['secondpart']['parts']:
-                    item['url'] = linked_name(item)
-
-            if data['type'] == '2 column':
-                for entry in data['parts']:
-                    entry['url'] = linked_name(entry)
-                if 'part2' in entry:
-                    for pt2 in entry['part2']:
-                        pt2['url'] = linked_name(pt2)
-                        for item in pt2['parts']:
-                            item['url'] = linked_name(item)
-
-            if data['type'] in ['multilevel', 'simple']:
+            if 'parts' in data:
                 for entry in data['parts']:
                     entry['url'] = linked_name(entry)
                     if 'part2' in entry:

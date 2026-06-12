@@ -2,7 +2,6 @@
   type: simple
   heading:
      title: Introduction
-     url_for: "introduction"
   parts:
     - title: Overview
       url_for: "introduction"
@@ -17,7 +16,6 @@
   type: simple
   heading:
     title: L-functions
-    url_for: "l_functions.contents"
   parts:
     - title: "Rational"
       url_for: "l_functions.rational"
@@ -28,7 +26,6 @@
   type: simple
   heading:
     title: Modular forms
-    url_for: "modular_forms"
   parts:
     - title: Classical
       url_for: "cmf.index"
@@ -62,7 +59,6 @@
   type: simple
   heading:
     title: Varieties
-    url_for: "varieties"
   parts:
     - title: "Elliptic curves"
       colspan: onecolumn
@@ -128,7 +124,6 @@
   type: simple
   heading:
     title: Fields
-    url_for: "fields"
   parts:
     - title: Number fields
       url_for:  "number_fields.number_field_render_webpage"
@@ -147,7 +142,6 @@
   type: simple
   heading:
     title: Representations
-    url_for: "representations"
   parts:
     - title: Dirichlet characters
       url_for:  "characters.render_DirichletNavigation"
@@ -194,7 +188,6 @@
   type: simple
   heading:
     title: Groups
-    url_for: "groups"
   parts:
   - title: Galois groups
     url_for: "galois_groups.index"
