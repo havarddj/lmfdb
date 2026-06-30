@@ -58,7 +58,9 @@ mwgroup:
   comment: Mordell-Weil group
   magma: MordellWeilGroup(E);
   lean: |
-    example: E.Point ≃+{lean_mwgroup} := sorry
+    def E_mordell_weil : E.toProjective.Point ≃+ {lean_mwgroup} := by
+      sorry
+
 
 gens:
   comment: Mordell-Weil generators
@@ -92,7 +94,7 @@ disc:
   magma: Discriminant(E);
   oscar: discriminant(E)
   lean: |
-    theorem E_Δ : E.Δ =  -10351 := by
+    theorem E_Δ : E.Δ = {disc} := by
       decide +kernel
 
 
@@ -105,7 +107,7 @@ jinv:
   lean: |
     instance : E.IsElliptic :=
       ⟨by simp +decide [E_Δ]⟩ -- First verify that E is an elliptic curve
-    example: WeierstrassCurve.j E = {lean_j_invariant} := sorry
+    example: WeierstrassCurve.j E = {j_invariant} := sorry
 
 cm:
   comment: Potential complex multiplication
@@ -129,6 +131,10 @@ rank:
   pari: |
     [lower,upper] = ellrank(E)
   magma: Rank(E);
+  lean: |
+    theorem E_rank : Module.finrank ℤ E.toProjective.Point = {rank} := by
+      sorry
+    
 
 analytic_rank:
   comment: Analytic rank
@@ -163,7 +169,10 @@ ntors:
   pari:  elltors(E)[1]
   magma: Order(TorsionSubgroup(E));
   oscar: prod(torsion_structure(E)[1])
-
+  lean: |
+    theorem E_torsion : Nat.card (AddCommGroup.torsion E.toProjective.Point) = {ntors} := by
+      sorry
+  
 sha:
   comment: Order of Sha
   sage:  E.sha().an_numerical()

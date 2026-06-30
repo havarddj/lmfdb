@@ -946,13 +946,34 @@ class WebEC():
             'ainvs': self.data['ainvs'],
             'level': adelic_level,
             'adelic_gens': adelic_gens,
-            'lean_ainvs': ", ".join(map(str, self.data["ainvs"])), # needed to remove brackets for Lean input!
-            'lean_mwgroup': " --placeholder-- ",                   # temporary placeholder
-            'lean_disc': self.data["disc"],
-            'lean_j_invariant': self.data["j_invariant"],
+            # The next few are specific to Lean; think about whether this really belongs here.
+            'lean_ainvs': ", ".join(map(str, self.data["ainvs"])), # Necessary to remove brackets for Lean input!
+            'lean_mwgroup': lean_MW_group_string(self.rank, self.torsion_structure),                   
+            'disc': self.data["disc"],
+            'j_invariant': self.data["j_invariant"],
+            'rank': self.rank,
+            'ntors': self.mwbsd['torsion'],
         }
         for prop in code:
             if prop != 'snippet_test':
                 for lang in code[prop]:
                     code[prop][lang] = code[prop][lang].format(**data)
         return code
+
+def lean_MW_group_string(rank, torsion_structure):
+    """
+    Return Mordell-Weil group structure in a Lean4-readable format.
+    """
+    if rank == 0 and len(torsion_structure) == 0:
+        return "Unit"
+    parts = []
+
+    if rank == 1:
+        parts.append("ℤ")
+    elif rank > 1:
+        parts.append(f"(Fin {rank} → ℤ)")
+
+    if len(torsion_structure) > 0:
+        parts.append(" × ".join([f"(ZMod {inv})"
+                                 for inv in torsion_structure]))
+    return " × ".join(parts)
