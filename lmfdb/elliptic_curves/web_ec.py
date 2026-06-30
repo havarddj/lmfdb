@@ -939,12 +939,18 @@ class WebEC():
             adelic_level = self.data['adelic_data']['adelic_image'].split('.',1)[0]
         else:
             adelic_gens = adelic_level = ''
+
         data = {
             'label': "{label}",
             'lang' : "{lang}",
             'ainvs': self.data['ainvs'],
             'level': adelic_level,
-            'adelic_gens': adelic_gens }
+            'adelic_gens': adelic_gens,
+            'lean_ainvs': ", ".join(map(str, self.data["ainvs"])), # needed to remove brackets for Lean input!
+            'lean_mwgroup': " --placeholder-- ",                   # temporary placeholder
+            'lean_disc': self.data["disc"],
+            'lean_j_invariant': self.data["j_invariant"],
+        }
         for prop in code:
             if prop != 'snippet_test':
                 for lang in code[prop]:
