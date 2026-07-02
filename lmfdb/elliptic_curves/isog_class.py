@@ -65,12 +65,24 @@ class ECisog_class():
 
         # We don't have Oscar code snippets for elliptic curve isog classes (for now)
         code["prompt"].pop("oscar")
-
+        
         for lang in code["curve"]:
-            code["curve"][lang] = code["curve"][lang].format(**{'ainvs': self.ainvs})
+            if lang == "lean":
+                ainvs = ", ".join(map(str, self.ainvs))
+                code["curve"][lang] = code["curve"][lang].format(**{'lean_ainvs': ainvs})
+            else:
+                code["curve"][lang] = code["curve"][lang].format(**{'ainvs': self.ainvs})
 
+        # create Lean certificates for good and bad L-factors
+        code["Lfactors"] = {}
+        code["lfactors"]["lean"] = "test"
+
+        # Populate rank; NB: this should be done in a cleaner away for this and web_ec.py
+        code["rank"]["lean"] = code["rank"]["lean"].format(**{'rank': self.rank})
         # Create top code snippet to construct elliptic curve isogeny class
         code["frontmatter"]["all"] = code["frontmatter"]["all"].replace("curve", "curve isogeny class")
+
+
         for lang in code["isogeny_class"]:
             if lang != "comment":
                 code["isogeny_class"][lang] = code["curve"][lang]+"\n"+code["isogeny_class"][lang]+"\n"
