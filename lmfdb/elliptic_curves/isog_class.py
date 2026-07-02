@@ -74,8 +74,8 @@ class ECisog_class():
                 code["curve"][lang] = code["curve"][lang].format(**{'ainvs': self.ainvs})
 
         # create Lean certificates for good and bad L-factors
-        code["Lfactors"] = {}
-        code["lfactors"]["lean"] = "test"
+        # code["Lfactors"] = {}
+        # code["lfactors"]["lean"] = "test"
 
         # Populate rank; NB: this should be done in a cleaner away for this and web_ec.py
         code["rank"]["lean"] = code["rank"]["lean"].format(**{'rank': self.rank})
