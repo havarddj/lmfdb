@@ -47,6 +47,8 @@ curve:
   oscar: E = elliptic_curve({ainvs})
   lean: |
     def E : WeierstrassCurve ℚ := ⟨{lean_ainvs}⟩
+    instance : E.IsGloballyMinimal :=
+      sorry
 
 simple_curve:
   comment: Simplified equation
@@ -97,7 +99,6 @@ disc:
     theorem E_Δ : E.Δ = {disc} := by
       decide +kernel
 
-
 jinv:
   comment: j-invariant
   sage:  E.j_invariant().factor()
@@ -105,8 +106,7 @@ jinv:
   magma: jInvariant(E);
   oscar: j_invariant(E)
   lean: |
-    instance : E.IsElliptic :=
-      ⟨by simp +decide [E_Δ]⟩ -- First verify that E is an elliptic curve
+    instance : E.IsElliptic := ⟨by simp +decide [E_Δ]⟩
     example: WeierstrassCurve.j E = {j_invariant} := sorry
 
 cm:

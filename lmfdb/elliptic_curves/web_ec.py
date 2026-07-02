@@ -971,7 +971,7 @@ def lean_MW_group_string(rank, torsion_structure):
     if rank == 1:
         parts.append("ℤ")
     elif rank > 1:
-        parts.append(f"(Fin {rank} → ℤ)")
+        parts.append(" × ".join(["ℤ" for _ in range(rank)]))
 
     if len(torsion_structure) > 0:
         parts.append(" × ".join([f"(ZMod {inv})"
