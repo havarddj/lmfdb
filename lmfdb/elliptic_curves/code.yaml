@@ -273,6 +273,8 @@ isogeny_class:
   sage: E.isogeny_class()
   magma: IsogenousCurves(E);
   pari: ellisomat(E)
+  lean: |
+    -- Isogeny class not implemented
   
 curves:
   comment: List of curves in the isogeny class
@@ -287,8 +289,8 @@ isogeny_matrix:
 isogeny_graph:
   comment: Isogeny graph
   sage: E.isogeny_graph().plot(edge_labels=True)
-
-
+  
+  
 # Code snippet tests for elliptic curve pages and isogeny class pages
 snippet_test:
   test11a: 

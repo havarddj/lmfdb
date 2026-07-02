@@ -946,7 +946,7 @@ class WebEC():
             'ainvs': self.data['ainvs'],
             'level': adelic_level,
             'adelic_gens': adelic_gens,
-            # The next few are specific to Lean; think about whether this really belongs here.
+                # The next few are specific to Lean; think about whether this really belongs here.
             'lean_ainvs': ", ".join(map(str, self.data["ainvs"])), # Necessary to remove brackets for Lean input!
             'lean_mwgroup': lean_MW_group_string(self.rank, self.torsion_structure),                   
             'disc': self.data["disc"],
