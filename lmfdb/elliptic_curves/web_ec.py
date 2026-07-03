@@ -650,6 +650,7 @@ class WebEC():
                           ('Oscar commands', url_for(".ec_code_download", conductor=cond, iso=iso, number=num, label=self.lmfdb_label, download_type='oscar')),
                           ('PariGP commands', url_for(".ec_code_download", conductor=cond, iso=iso, number=num, label=self.lmfdb_label, download_type='gp')),
                           ('SageMath commands', url_for(".ec_code_download", conductor=cond, iso=iso, number=num, label=self.lmfdb_label, download_type='sage')),
+                          ('Lean certificate', url_for(".ec_code_download", conductor=cond, iso=iso, number=num, label=self.lmfdb_label, download_type='lean')),
                           ('Underlying data', url_for(".EC_data", label=self.lmfdb_label)),
         ]
 
