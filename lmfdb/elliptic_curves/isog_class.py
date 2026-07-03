@@ -216,8 +216,13 @@ class ECisog_class():
 
         self.downloads = [('q-expansion to text', url_for(".download_EC_qexp", label=self.lmfdb_iso, limit=1000)),
                           ('All stored data to text', url_for(".download_EC_all", label=self.lmfdb_iso))]
-        for lang in [("PariGP", "gp"), ("SageMath", "sage"), ("Magma", "magma")]:
-            self.downloads.append(('{} commands'.format(lang[0]), url_for(".ec_isog_code_download", conductor=self.conductor, iso=self.iso_label, label=self.lmfdb_iso, download_type=lang[1])))
+        for lang in [("PariGP", "gp"), ("SageMath", "sage"), ("Magma", "magma"), ("Lean", "lean")]:
+            if lang[0] == "Lean":
+                button_text = 'Lean certificate'
+            else:
+                button_text = '{} commands'.format(lang[0])
+            self.downloads.append((button_text, url_for(".ec_isog_code_download", conductor=self.conductor, iso=self.iso_label, label=self.lmfdb_iso, download_type=lang[1])))
+
         self.downloads.append(('Underlying data', url_for(".EC_data", label=self.lmfdb_iso)))
 
         self.bread = [('Elliptic curves', url_for("ecnf.index")),
