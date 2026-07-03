@@ -1130,7 +1130,7 @@ def ec_isog_code(**args):
 
         # if there are no Euler factors, there's nothing to certify; we should instead print code on the page
         if not hasattr(E, "euler_factors"):
-            return ""
+            return "-- No euler factors in the LMFDB for this curve."
         
         # NOTE: since 5 is the 3rd prime, the [2] in euler_factor is hardcoded. This should be fixed (but we don't want this anyway)
         for key, val in {"lean_ainvs": ", ".join(map(str, E.ainvs)), "p_val": str(p), "a_p_val": str(-E.euler_factors[2][1])}.items():
