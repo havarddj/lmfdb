@@ -194,6 +194,31 @@ def to_rset(query):
     return ans
 
 
+# Sentinel distinguishing an absent query key from an explicit null predicate:
+# query.get("rd") returns None both for {} and for {"rd": None}, but the former is
+# "no constraint" while the latter is the SQL predicate "rd IS NULL".
+_MISSING = object()
+
+
+def _contains_none(value):
+    """
+    Whether ``None`` appears anywhere in a psycodict query value's expression tree.
+
+    In psycodict queries ``None`` carries SQL-null semantics (``{"$ne": None}`` means
+    ``IS NOT NULL``), which the real-number model of ``to_rset`` cannot represent:
+    it reads ``None`` as the whole real line, so e.g. ``{"$ne": None}`` collapses to
+    the empty set.  Callers doing numeric reasoning should treat any value containing
+    ``None`` as outside the model.
+    """
+    if value is None:
+        return True
+    if isinstance(value, dict):
+        return any(_contains_none(v) for v in value.values())
+    if isinstance(value, (list, tuple, set)):
+        return any(_contains_none(v) for v in value)
+    return False
+
+
 def interval_sum(I, J):
     """
     `{i + j : i in I, j in J}`
@@ -2407,7 +2432,17 @@ class NFBound(ColTest):
         strictly above the Galois root discriminant range: the Galois closure contains the
         field, so rd <= grd for every number field.  That relation does not depend on the
         degree, so no degree constraint is required.
+
+        Constraints involving SQL-null semantics (``None`` anywhere in the value, as in
+        ``{"$ne": None}`` for ``IS NOT NULL``) are not sets of real numbers, so they
+        bypass this numeric precheck entirely rather than being misread as empty ranges.
         """
+        # None in a predicate means SQL null, which the real-number model cannot
+        # represent (an omitted key, by contrast, is genuinely unconstrained).
+        for key in ("rd", "grd"):
+            value = query.get(key, _MISSING)
+            if value is not _MISSING and _contains_none(value):
+                return None
         try:
             rd = NumberSet(query.get("rd"))
             grd = NumberSet(query.get("grd"))

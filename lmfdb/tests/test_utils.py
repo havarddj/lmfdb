@@ -460,3 +460,17 @@ class UtilsTest(unittest.TestCase):
         self.assertIsNone(lookup["nf_fields"].precheck(query))
         # Same for a query with no grd constraint at all.
         self.assertIsNone(lookup["nf_fields"].precheck({"degree": 5, "rd": {"$gte": 40, "$lte": 60}}))
+
+    def test_complete_precheck_declines_null_predicates(self):
+        # In psycodict queries None carries SQL-null semantics ({"$ne": None} means
+        # IS NOT NULL), which the numeric model misreads as an empty range; the
+        # precheck must decline such constraints rather than report a nonempty
+        # search as intrinsically impossible.
+        for query in [
+                {"grd": {"$ne": None}},
+                {"grd": {"$not": None}},
+                {"rd": {"$gte": 40}, "grd": {"$or": [{"$ne": None}, {"$lte": 30}]}},
+                {"rd": None, "grd": {"$lte": 30}},
+        ]:
+            with self.subTest(query=query):
+                self.assertIsNone(lookup["nf_fields"].precheck(query))
