@@ -520,6 +520,10 @@ snippet_test:
     label: C1-data
     langs: [sage, magma]
     url: Groups/Abstract/1.1/download/{lang}
+  testC5data:
+    label: C5-data
+    langs: [sage, magma]
+    url: Groups/Abstract/5.1/download/{lang}
   testS3data:
     label: S3-data
     langs: [sage, magma]

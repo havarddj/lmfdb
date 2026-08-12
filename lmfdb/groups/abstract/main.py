@@ -2579,10 +2579,16 @@ def _char_table_data(G):
     """
     Everything about the character table that does not depend on the output
     language.  Conjugacy classes come out in LMFDB counter order, so the
-    ``powers`` entries (which are counters) index directly into these lists.
+    *entries* of the power maps (which are counters) index directly into these
+    lists.
+
+    NB: "c.powers" is indexed by the primes dividing |G|*phi(|G|), NOT by
+    "G.factors_of_order"; "c.prime_powers()" restricts it to the primes
+    dividing |G|, in the order given by "factors_of_order".
     """
     classes = list(G.conjugacy_classes)
-    primes = [int(p) for p in G.factors_of_order[:G.num_primes_for_power_maps]]
+    primes = [int(p) for p in G.factors_of_order]
+    prime_powers = [c.prime_powers() for c in classes]   # aligned with `primes`
     return {
         "label": G.label,
         "name": G.name,
@@ -2592,7 +2598,7 @@ def _char_table_data(G):
         "sizes": [int(c.size) for c in classes],
         "centralizers": [int(ZZ(c.group_order) // ZZ(c.size)) for c in classes],
         "orders": [int(c.order) for c in classes],
-        "powers": {p: [int(c.powers[i]) for c in classes] for i, p in enumerate(primes)},
+        "powers": {p: [int(row[i]) for row in prime_powers] for i, p in enumerate(primes)},
         "reps": [c.representative for c in classes],
         "chars": list(G.characters),
         "indicators": [int(chi.indicator) for chi in G.characters],
@@ -2729,12 +2735,12 @@ def download_char_table_gap(G,ul_label):
 
     # process info from each conjugacy class
     size_centralizers, class_names,order_class_reps, cc_reps = ([] for i in range(4))
-    num_primes = G.num_primes_for_power_maps
-    power_maps = [[ ] for i in range(num_primes)]
+    primes = [int(p) for p in G.factors_of_order]
+    power_maps = [[] for _ in primes]
     for conj in G.conjugacy_classes:
-        for i in range(num_primes):
-            power_maps[i].append(conj.powers[i])
-        #power_maps.append(conj.powers)
+        pp = conj.prime_powers()   # aligned with G.factors_of_order
+        for i in range(len(primes)):
+            power_maps[i].append(pp[i])
         size_centralizers.append(int(conj.group_order/conj.size))
         class_names.append(conj.label)
         order_class_reps.append(conj.order)
@@ -2744,14 +2750,16 @@ def download_char_table_gap(G,ul_label):
             cc_reps.append(G.decode(conj.representative,rep_type=gp_type))
 
     cl_names = str(class_names).replace("'",'"')  # need " for GAP instead of '
-    pwr_maps = "[ , "
-    for i in range(len(power_maps)-1):
-        pwr_maps += str(power_maps[i]) + ", "
-    pwr_maps += str(power_maps[len(power_maps)-1]) + "]"  # PowerMaps needs a blank entry in front
 
     s += tbl + ".ConjugacyClasses:= " + str(cc_reps) + ";\n"
     s += tbl + ".IdentificationOfConjugacyClasses:= " + str(list(range(1,G.number_conjugacy_classes+1))) + ";\n"
-    s += tbl + ".ComputedPowerMaps:= "  + str(pwr_maps) + ";\n"
+
+    # GAP indexes ComputedPowerMaps by the integer p itself, so entries must be
+    # assigned at positions 2, 3, 5, 7, ... rather than at 2, 3, 4, 5, ...
+    s += tbl + ".ComputedPowerMaps:= [];\n"
+    for p, pmap in zip(primes, power_maps):
+        s += tbl + ".ComputedPowerMaps[" + str(p) + "]:= " + str(pmap) + ";\n"    
+
     s += tbl + ".SizesCentralizers:= "  + str(size_centralizers) + ";\n"
     s += tbl + ".ClassNames:= "  + str(cl_names) + ";\n"
     s += tbl + ".OrderClassRepresentatives:= "  + str(order_class_reps) + ";\n"

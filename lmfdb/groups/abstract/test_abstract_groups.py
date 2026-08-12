@@ -46,6 +46,13 @@ class AbGpsTest(LmfdbTest):
         self.assertTrue("quasisimple = false," in response.get_data(as_text=True))
         self.assertTrue('chartbl_384_5458["NrConjugacyClasses"] = 240' in response.get_data(as_text=True))
 
+        # Test 5.1: |G| = 5, but |G|*phi(|G|) = 20 has prime factors [2, 5], so c.powers[0] is the 2-power map.
+        # Pairing c.powers positionally with factors_of_order = [5] would file the 2-power map under the key 5.
+        response = self.tc.get("/Groups/Abstract/5.1/download/sage")
+        self.assertTrue('chartbl_5_1["ComputedPowerMaps"] = {5: [1, 1, 1, 1, 1]}' in response.get_data(as_text=True))
+        response = self.tc.get("/Groups/Abstract/5.1/download/gap")
+        self.assertTrue("chartbl_5_1.ComputedPowerMaps[5]:= [1, 1, 1, 1, 1];" in response.get_data(as_text=True))
+
 
     def test_conj_decode(self):
         from lmfdb.groups.abstract.web_groups import WebAbstractGroup
