@@ -171,7 +171,7 @@ def _eval_code_file(data, lang, proc, logfile):
     prompt = prompt_dict[lang]
     cont_prompt = continuation_dict.get(lang)
     patterns = [prompt] if cont_prompt is None else [prompt, cont_prompt]
-    
+
     # Reset the random state before every snippet file (to ensure log files are generated deterministically)
     seed_cmd = seed_dict.get(lang)
     if seed_cmd is not None:

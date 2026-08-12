@@ -53,7 +53,6 @@ class AbGpsTest(LmfdbTest):
         response = self.tc.get("/Groups/Abstract/5.1/download/gap")
         self.assertTrue("chartbl_5_1.ComputedPowerMaps[5]:= [1, 1, 1, 1, 1];" in response.get_data(as_text=True))
 
-
     def test_conj_decode(self):
         from lmfdb.groups.abstract.web_groups import WebAbstractGroup
         G = WebAbstractGroup("18.2")
