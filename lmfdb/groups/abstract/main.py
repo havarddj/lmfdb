@@ -2535,10 +2535,10 @@ def format_cyclotomic_element(n, vals, dltype):
 #    boolean - the format in which the boolean invariants are given
 
 DOWNLOAD_LANG_DATA = {
-    "gap":   {"com1": "#",  "com2": "",   "line": "#", "ext": ".g", "booleans": "record"},
-    "magma": {"com1": "/*", "com2": "*/", "line": "",  "ext": ".m", "booleans": "record"},
-    "sage":  {"com1": "#",  "com2": "",   "line": "#", "ext": ".sage", "booleans": "dict"},
-    "oscar": {"com1": "#=", "com2": "=#", "line": "",  "ext": ".jl", "booleans": "NamedTuple"},
+    "gap": {"com1": "#", "com2": "", "line": "#", "ext": ".g", "booleans": "record"},
+    "magma": {"com1": "/*", "com2": "*/", "line": "", "ext": ".m", "booleans": "record"},
+    "sage": {"com1": "#", "com2": "", "line": "#", "ext": ".sage", "booleans": "dict"},
+    "oscar": {"com1": "#=", "com2": "=#", "line": "", "ext": ".jl", "booleans": "NamedTuple"},
 }
 
 # List of the different possible group constructions
@@ -2603,7 +2603,7 @@ def download_construction_string(G, dltype):
             key = {"PC": "presentation", "Perm": "permutation"}.get(rep, rep)
             code = snippet.get(key, {}).get(dltype)
             if code:
-                s += rename_group_variable(str(code).strip(), REP_VAR[rep]) + "\n" 
+                s += rename_group_variable(str(code).strip(), REP_VAR[rep]) + "\n"
     return s
 
 
@@ -2619,7 +2619,7 @@ def download_boolean_string(G, dltype, ul_label):
     known = [(a, v) for a, v in ((a, getattr(G, a)) for a in BOOL_ATTR) if v is not None]
     if not known:
         return ""
- 
+
     # Construct the string presenting all boolean invariants of G
     var = "booleans_" + ul_label
     if dltype == "gap":
@@ -2684,7 +2684,7 @@ def download_element_string(G, code, dltype):
     var = REP_VAR.get(gp_type)
     if var is None:
         return None
- 
+
     if gp_type == "PC":
         if dltype == "oscar" and not (G.code_snippets() or {}).get("presentation", {}).get("oscar"):
             return None
@@ -2692,7 +2692,7 @@ def download_element_string(G, code, dltype):
             return f"{var}.Identity()" if dltype == "sage" else f"one({var})"
         # "a^{2}*b" -> "a^2*b"; a, b, ... are bound by the presentation snippet
         return G.decode_as_pcgs(code, as_str=True, as_magma=True).replace("{", "").replace("}", "")
- 
+
     if gp_type == "Perm":
         cycles = G.decode_as_perm(code, as_str=True)
         if dltype == "sage":
@@ -2700,7 +2700,7 @@ def download_element_string(G, code, dltype):
         d = G.representations["Perm"]["d"]
         x = G.decode_as_perm(code)
         return f"perm({var}, {[int(x(i)) for i in range(1, d + 1)]})"
- 
+
     if gp_type in MATRIX_REPS:
         rep = G.representations[gp_type]
         d = rep["d"]
@@ -2717,7 +2717,7 @@ def download_element_string(G, code, dltype):
              "GLZq": f"residue_ring(ZZ, {rep.get('q')})[1]",
              "GLFq": "F"}[gp_type]
         return f"{var}(matrix({R}, {rows}))"
- 
+
     return None
 
 
@@ -2828,7 +2828,7 @@ def download_char_table_gap(G,ul_label):
     # assigned at positions 2, 3, 5, 7, ... rather than at 2, 3, 4, 5, ...
     s += tbl + ".ComputedPowerMaps:= [];\n"
     for p, pmap in zip(primes, power_maps):
-        s += tbl + ".ComputedPowerMaps[" + str(p) + "]:= " + str(pmap) + ";\n"    
+        s += tbl + ".ComputedPowerMaps[" + str(p) + "]:= " + str(pmap) + ";\n"
 
     s += tbl + ".SizesCentralizers:= "  + str(size_centralizers) + ";\n"
     s += tbl + ".ClassNames:= "  + str(cl_names) + ";\n"
@@ -2920,9 +2920,9 @@ def download_char_table(G, dltype, ul_label):  # G is web abstract group
 def download_trivial_construction(dltype):
     """ The trivial group needs to be special-cased. """
     return {
-        "gap":   "GPC := TrivialGroup();\nGPerm := SymmetricGroup(1);\n",
+        "gap": "GPC := TrivialGroup();\nGPerm := SymmetricGroup(1);\n",
         "magma": "GPC := SmallGroup(1,1);\nGPerm := Sym(1);\n",
-        "sage":  "GPC = SymmetricGroup(1)\nGPerm = SymmetricGroup(1)\n",
+        "sage": "GPC = SymmetricGroup(1)\nGPerm = SymmetricGroup(1)\n",
         "oscar": "GPC = symmetric_group(1)\nGPerm = symmetric_group(1)\n",
     }.get(dltype, "")
 
