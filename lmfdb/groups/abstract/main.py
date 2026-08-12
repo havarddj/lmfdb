@@ -2611,6 +2611,10 @@ def download_element_string(G, code, dltype):
     """
 
     gp_type = G.element_repr_type
+
+    if gp_type == "Lie":
+        return None
+
     var = REP_VAR.get(gp_type)
     if var is None:
         return None
@@ -2885,18 +2889,18 @@ def download_group(**args):
     else:
         cc_known = True
 
-    # Sage and Oscar cannot yet write down elements of a group of Lie type
-    if dltype in ["sage", "oscar"] and wag.element_repr_type == "Lie":
-        cc_known = False
-
     s += download_preamble(com1, com2, dltype, cc_known)
     s += "\n \n"
 
     s += com1 + " Constructions " + com2 + "\n"
     if label == "1.1":  # special case for trivial subgroup
-        s += download_trivial_construction(dltype)
+        constructions = download_trivial_construction(dltype)
     else:
-        s += download_construction_string(wag,dltype)
+        constructions = download_construction_string(wag, dltype)
+    if not constructions:
+        # e.g. groups of Lie type, for which no construction snippet exists yet
+        constructions = com1 + " Not available in this language. " + com2 + "\n"
+    s += constructions
     s += "\n \n"
 
     s += com1 + " Booleans " + com2 + "\n"

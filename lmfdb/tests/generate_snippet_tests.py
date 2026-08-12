@@ -38,7 +38,7 @@ exec_dict = {'sage': 'sage --simple-prompt',
 prompt_dict = {'sage': 'sage:', 'sage_gap': 'sage:', 'magma': 'magma> ', 'oscar': 'julia>', 'gp': 'gp> ', 'gap': 'gap> '}
 
 # Continuation prompts, i.e. what the REPL prints when a statement is left unfinished at the end of a line (e.g. a record or list spanning several lines).
-# Note: Oscar has no continuation prompt
+# Note: Oscar has no continuation prompt, so multi-line Oscar snippets are not yet supported.
 continuation_dict = {'gap': '\n> ', 'magma': 'magma> ', 'sage': '....: ', 'sage_gap': '....: '}
 
 comment_dict = {'magma': '//', 'sage': '#', 'sage_gap': '#',
