@@ -319,7 +319,6 @@ class WebGaloisGroup:
             for lang in n32_dbs:
                 if lang != "comment":
                     self.code['gg'][lang] = f"{comments[lang]} This requires the 32T* database at {n32_dbs[lang]}\n" + self.code['gg'][lang]
-                    print("Name of sage gg key:", self.code['gg']['sage'])
 
 ############  Misc Functions
 
