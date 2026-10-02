@@ -27,6 +27,7 @@ from lmfdb.logger import logger
 from lmfdb.api import datapage
 from lmfdb.elliptic_curves import ec_page
 from lmfdb.elliptic_curves.isog_class import ECisog_class
+from lmfdb.elliptic_curves.isog_lean_cert import lean_cert
 from lmfdb.elliptic_curves.web_ec import WebEC, match_lmfdb_label, match_cremona_label, split_lmfdb_label, split_cremona_label, weierstrass_eqn_regex, short_weierstrass_eqn_regex, class_lmfdb_label, curve_lmfdb_label, EC_ainvs, latex_sha, gl2_subgroup_data, CREMONA_BOUND, match_weierstrass_polys, match_coeff_vec
 from sage.misc.cachefunc import cached_method
 from lmfdb.ecnf.ecnf_stats import latex_tor
@@ -1127,19 +1128,10 @@ def ec_isog_code(**args):
     if lang not in Fullname:
         return abort(404, "Invalid code language specified: " + lang)
     elif lang == 'lean':
-        # TODO: THIS IMPORT SHOULD NOT BE HERE (maybe)!! 
-        from lmfdb.elliptic_curves.isog_lean_cert import ISOG_LEAN_CERT
-        # NOTE: We cannot use string templating here because lean uses squirly braces in its syntax
-        p = 5
-
-        # if there are no Euler factors, there's nothing to certify; we should instead print code on the page
         if not hasattr(E, "euler_factors"):
             return "-- No euler factors in the LMFDB for this curve."
-        
-        # NOTE: since 5 is the 3rd prime, the [2] in euler_factor is hardcoded. This should be fixed (but we don't want this anyway)
-        for key, val in {"lean_ainvs": ", ".join(map(str, E.ainvs)), "p_val": str(p), "a_p_val": str(-E.euler_factors[2][1])}.items():
-            ISOG_LEAN_CERT = ISOG_LEAN_CERT.replace("{"+ key + "}", val)
-        return ISOG_LEAN_CERT
+
+        return lean_cert(E)
     
     code = CodeSnippet(Ecode)
     sorted_isog_code_names = ['isogeny_class', 'rank', 'qexp', 'isogeny_matrix', 'isogeny_graph', 'curves']
