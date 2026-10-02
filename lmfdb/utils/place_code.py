@@ -30,9 +30,9 @@ class CodeSnippet():
 
         # edit these when adding support for more languages
         self.comments = {'magma': '//', 'sage': '#', 'sage_gap': '#',
-                         'gp': '\\\\', 'pari': '\\\\', 'oscar': '#', 'gap': '#'}
+                         'gp': '\\\\', 'pari': '\\\\', 'oscar': '#', 'gap': '#', 'lean': "--"}
         self.full_names = {"pari": "Pari/GP", "sage": "SageMath", "sage_gap": "SageMath (using Gap)",
-                           "magma": "Magma", "oscar": "Oscar", "gap": "Gap"}
+                           "magma": "Magma", "oscar": "Oscar", "gap": "Gap", "lean": "Lean"}
 
     def place_code(self, is_top_snippet=False):
         """Return HTML string which displays code in code box, with copying functionality.

@@ -3,6 +3,7 @@ prompt:
   pari:   'gp'
   magma:  'magma'
   oscar:  'oscar'
+  lean:   'lean'
 
 frontmatter:
   all: |
@@ -14,6 +15,8 @@ curve:
   pari:  E = ellinit({ainvs})
   magma: E := EllipticCurve({ainvs});
   oscar: E = elliptic_curve({ainvs})
+  lean: |
+    def E : WeierstrassCurve ℚ := ⟨{lean_ainvs}⟩
 
 simple_curve:
   comment: Simplified equation
@@ -24,6 +27,8 @@ simple_curve:
 mwgroup:
   comment: Mordell-Weil group
   magma: MordellWeilGroup(E);
+  lean: |
+    example: E.Point ≃+{lean_mwgroup} := sorry
 
 gens:
   comment: Mordell-Weil generators
@@ -56,6 +61,10 @@ disc:
   pari:  E.disc
   magma: Discriminant(E);
   oscar: discriminant(E)
+  lean: |
+    theorem E_Δ : E.Δ =  -10351 := by
+      decide +kernel
+
 
 jinv:
   comment: j-invariant
@@ -63,6 +72,10 @@ jinv:
   pari:  E.j
   magma: jInvariant(E);
   oscar: j_invariant(E)
+  lean: |
+    instance : E.IsElliptic :=
+      ⟨by simp +decide [E_Δ]⟩ -- First verify that E is an elliptic curve
+    example: WeierstrassCurve.j E = {lean_j_invariant} := sorry
 
 cm:
   comment: Potential complex multiplication
