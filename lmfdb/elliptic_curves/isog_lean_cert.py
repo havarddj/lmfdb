@@ -1,37 +1,3 @@
-#!/usr/bin/env sage
-"""Generate a Lean Euler-factor certificate for an elliptic curve over ℤ.
-
-    from gen_pc_loop_lmfdb import render
-    render([0, -1, 0, -8, -16])     # -> the .lean file, as a string
-
-Sage computes a_p and the reduction types; the Lean file re-checks every row by `decide`.
-"""
-GOOD_PRIME_BOUND = 30
-
-
-# ---------------------------------------------------------------- tables
-
-def tables(a):
-    """Return (good, mult, add) for the curve with a-invariants a.
-
-    `good` and `mult` are lists of (p, a_p); `add` is a list of primes.
-    """
-    E = EllipticCurve(a)
-    if not E.is_minimal():
-        raise ValueError(
-            f"{a} is not a minimal model; the Lean predicates test the model as given "
-            f"(minimal model: {list(E.minimal_model().a_invariants())})"
-        )
-    disc = ZZ(E.discriminant())
-    good = [(p, E.ap(p)) for p in primes(GOOD_PRIME_BOUND) if E.has_good_reduction(p)]
-    mult, add = [], []
-    for p in disc.prime_factors():
-        if E.has_multiplicative_reduction(p):
-            mult.append((p, E.ap(p)))
-        else:
-            add.append(p)
-    return good, mult, add
-
 
 # ---------------------------------------------------------------- Lean rendering
 
